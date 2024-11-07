@@ -1,42 +1,8 @@
 ---
-import ProductCard from '../components/ProductCard.astro';
-import Layout from '../layouts/BaseLayout.astro';
+import Main from '@layouts/Main.astro';
+import NewProducts from '@sections/index/NewProducts.astro';
 ---
 
-<Layout title="Store for Devs">
-
-<section class="products-container">
-<ProductCard 
-  img="https://placehold.co/300"
-  category="Categoría"
-  title="Nombre del producto"
-  price="$9990"
-  />
-  <ProductCard 
-  img="https://placehold.co/300"
-  category="Categoría"
-  title="Nombre del producto"
-  price="$9990"
-  />
-  <ProductCard 
-  img="https://placehold.co/300"
-  category="Categoría"
-  title="Nombre del producto"
-  price="$9990"
-  />
-  <ProductCard 
-  img="https://placehold.co/300"
-  category="Categoría"
-  title="Nombre del producto"
-  price="$9990"
-  />
-</section>
-
-</Layout>
-
-<style>
- .products-container {
-  display: flex;
-  gap: 20px;
- }
-</style>
+<Main title="Store for Devs" description="Mi tiendita">
+  <NewProducts />
+</Main>
