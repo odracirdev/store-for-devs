@@ -1,0 +1,17 @@
+---
+import ProductCard from '@components/ui/ProductCard.astro';
+---
+
+<section class="products-container">
+  <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+  <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+  <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+  <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+</section>
+
+<style>
+  .products-container {
+    display: flex;
+    gap: 20px;
+  }
+</style>
