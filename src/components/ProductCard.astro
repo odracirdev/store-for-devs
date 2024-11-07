@@ -1,0 +1,47 @@
+---
+const {img, category, title, rating, price} = Astro.props
+---
+
+<div class="product-card-container">
+    <img class="product-image" src={img} alt={title}>
+    <div class="product-info">
+      <h4 class="product-category">{category}</h4>
+      <h3 class="product-title">{title}</h3>
+      <span class="product-rating">{rating}</span>
+      <p class="product-price">{price}</p>
+    </div>
+  </div>
+
+  <style>
+  .product-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 300px;
+
+    & .product-image {
+      border-radius: 20px;
+    }
+
+    & .product-info {
+      display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    & .product-category {
+      font-weight: 400;
+      text-transform: uppercase;
+      font-size: 18px;
+    }
+
+    & .product-title {
+      font-size: 20px;
+    }
+
+    &.product-price {
+      font-weight: 600;
+      font-size: 24px;
+    }
+    }
+  }
+</style>
