@@ -1,17 +1,48 @@
 ---
 import ProductCard from '@components/ui/ProductCard.astro';
 ---
-
-<section class="products-container">
-  <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-  <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-  <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-  <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+  
+<section class="products-wrapper">
+  <h2><span>Últimos Push</span></h2>
+  <div class="products-container">
+    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+  </div>
 </section>
 
 <style>
-  .products-container {
+  .products-wrapper {
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+
+    & h2 {
+      text-transform: uppercase;
+      text-align: center;
+      padding: 20px 0;
+      position: relative;
+
+      & span {
+        background-color: var(--bg-color);
+        padding: 0 20px;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        height: 2px;
+        width: 100%;
+        background-color: var(--primary-light);
+        opacity: 0.3;
+        top: 50%;
+        left: 0;
+        z-index: -1;
+      }
+    }
+    & .products-container {
+      display: flex;
+      gap: 20px;
+    }
   }
 </style>
