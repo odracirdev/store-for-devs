@@ -17,7 +17,8 @@
     "@astrojs/check": "^0.9.4",
     "@fontsource-variable/montserrat": "^5.1.0",
     "@fontsource-variable/work-sans": "^5.1.0",
-    "astro": "^4.16.10"
+    "astro": "^4.16.10",
+    "lightningcss": "^1.28.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
