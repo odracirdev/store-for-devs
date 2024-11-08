@@ -1,0 +1,62 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@images/assets/logo.webp';
+---
+
+<nav class="navbar-wrapper">
+  <div class="logo">
+    <a href="/">
+      <Image src={logo} alt="Store for Devs logo" width={90} />
+    </a>
+  </div>
+  <ul class="navbar">
+    <li><a href="#">Poleras</a></li>
+    <li><a href="#">Polerones</a></li>
+  </ul>
+  <div class="account-items-wrapper">
+    <ul class="account-items">
+      <li><a href="#">Login</a></li>
+      <li><a href="#">Carrito</a></li>
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .navbar-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+
+    & ul {
+      list-style: none;
+      padding: 0;
+
+      display: flex;
+      gap: 24px;
+    }
+
+    & a {
+      text-decoration: none;
+      color: var(--primary-light);
+      text-transform: uppercase;
+    }
+
+    & .logo {
+      margin-right: 40px;
+    }
+
+    & .navbar {
+      flex: 1;
+
+      & a {
+        font-size: 20px;
+        font-weight: 700;
+      }
+    }
+
+    & .account-items {
+      gap: 12px;
+    }
+  }
+</style>
