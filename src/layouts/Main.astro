@@ -1,10 +1,12 @@
 ---
+import Navbar from '@components/ui/Navbar/Navbar.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
 
 const { title, description } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
+  <Navbar />
   <main>
     <slot />
   </main>
@@ -12,7 +14,8 @@ const { title, description } = Astro.props;
 
 <style is:global>
   main {
-    width: 1080px;
+    width: 1120px;
+    padding: 0 40px;
     margin: 0 auto;
   }
 </style>
