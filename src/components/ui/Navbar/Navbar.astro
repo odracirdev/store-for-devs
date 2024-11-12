@@ -3,23 +3,25 @@ import { Image } from 'astro:assets';
 import logo from '@images/assets/logo.webp';
 ---
 
-<nav class="navbar-wrapper">
-  <div class="logo">
-    <a href="/">
-      <Image src={logo} alt="Store for Devs logo" width={90} />
-    </a>
-  </div>
-  <ul class="navbar">
-    <li><a href="#">Poleras</a></li>
-    <li><a href="#">Polerones</a></li>
-  </ul>
-  <div class="account-items-wrapper">
-    <ul class="account-items">
-      <li><a href="#">Login</a></li>
-      <li><a href="#">Carrito</a></li>
+<div class="navbar-section">
+  <nav class="navbar-wrapper">
+    <div class="logo">
+      <a href="/">
+        <Image src={logo} alt="Store for Devs logo" width={90} />
+      </a>
+    </div>
+    <ul class="navbar">
+      <li><a href="#">Poleras</a></li>
+      <li><a href="#">Polerones</a></li>
     </ul>
-  </div>
-</nav>
+    <div class="account-items-wrapper">
+      <ul class="account-items">
+        <li><a href="#">Login</a></li>
+        <li><a href="#">Carrito</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
 
 <style>
   .navbar-wrapper {
@@ -27,6 +29,8 @@ import logo from '@images/assets/logo.webp';
     justify-content: space-between;
     align-items: center;
     padding: 20px 0;
+    max-width: 1080px;
+    margin: 0 auto;
 
     & ul {
       list-style: none;

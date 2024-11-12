@@ -1,5 +1,7 @@
 import { defineConfig } from 'astro/config';
 
+import icon from 'astro-icon';
+
 const STANDARD_UNIT_SIZE = 16;
 
 // https://astro.build/config
@@ -20,5 +22,7 @@ export default defineConfig({
         }
       }
     }
-  }
+  },
+
+  integrations: [icon()]
 });

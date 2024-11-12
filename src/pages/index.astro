@@ -1,8 +1,12 @@
 ---
 import Main from '@layouts/Main.astro';
 import NewProducts from '@sections/index/NewProducts.astro';
+import TopSellingProducts from '@sections/index/TopSellingProducts.astro';
+import PromoSection from './_index/PromoSection.astro';
 ---
 
 <Main title="Store for Devs" description="Declara tu estilo">
+  <PromoSection />
   <NewProducts />
+  <TopSellingProducts />
 </Main>

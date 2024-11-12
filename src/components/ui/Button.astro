@@ -1,0 +1,35 @@
+---
+type Props = {
+  href: string;
+  target?: string;
+  rel?: string;
+  content: string;
+};
+
+const { href, target = '_self', rel = 'nofollow', content } = Astro.props;
+---
+
+<a href={href} class="button" target={target} rel={rel}>{content}</a>
+
+<style>
+  .button {
+    width: max-content;
+    margin: 20px 0;
+    padding: 8px 16px;
+    border-radius: 16px;
+    background-color: var(--primary);
+    color: var(--primary-dark);
+    box-shadow: 0 0 0 0 transparent;
+
+    transition:
+      box-shadow,
+      background-color,
+      ease-in-out 0.3s;
+
+    &:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px) translateX(-4px);
+      box-shadow: 4px 2px 0 0 var(--primary);
+    }
+  }
+</style>
