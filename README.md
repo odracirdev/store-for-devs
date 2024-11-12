@@ -1,1 +1,1 @@
-# Store for Devs Template
+# Store for Devs
