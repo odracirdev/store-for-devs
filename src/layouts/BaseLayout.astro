@@ -51,6 +51,7 @@ const { title, description } = Astro.props;
   }
 
   body {
+    font-size: 16px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
@@ -92,6 +93,12 @@ const { title, description } = Astro.props;
   h6 {
     text-wrap: balance;
     font-family: 'Work Sans Variable', sans-serif;
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--primary-light);
+    font-weight: 700;
   }
 
   #root,
