@@ -1,0 +1,29 @@
+---
+import { Icon } from 'astro-icon/components';
+
+type Props = {
+  icon: string;
+  promo: string;
+};
+
+const { icon, promo } = Astro.props;
+---
+
+<div class="promo-item">
+  <Icon name={icon} size={64} />
+  <p>{promo}</p>
+</div>
+
+<style>
+  .promo-item {
+    display: flex;
+    gap: 18px;
+    justify-content: flex-start;
+    align-items: center;
+    width: 360px;
+
+    & p {
+      font-weight: 700;
+    }
+  }
+</style>
