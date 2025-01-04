@@ -4,21 +4,20 @@ type Props = {
   target?: string;
   rel?: string;
   content: string;
+  color?: 'default' | 'light' | 'dark';
 };
 
-const { href, target = '_self', rel = 'nofollow', content } = Astro.props;
+const { href, target = '_self', rel = 'nofollow', content, color = 'default' } = Astro.props;
 ---
 
-<a href={href} class="button" target={target} rel={rel}>{content}</a>
+<a href={href} class={`button button-${color}`} target={target} rel={rel}>{content}</a>
 
 <style>
   .button {
     width: max-content;
     margin: 20px 0;
     padding: 8px 16px;
-    border-radius: 16px;
-    background-color: var(--primary);
-    color: var(--primary-dark);
+    border-radius: 9999px;
     box-shadow: 0 0 0 0 transparent;
 
     transition:
@@ -27,9 +26,37 @@ const { href, target = '_self', rel = 'nofollow', content } = Astro.props;
       ease-in-out 0.3s;
 
     &:hover {
-      background-color: var(--secondary);
       transform: translateY(-2px) translateX(-4px);
+    }
+  }
+
+  .button-default {
+    background-color: var(--primary);
+    color: var(--primary-dark);
+
+    &:hover {
+      background-color: var(--secondary);
       box-shadow: 4px 2px 0 0 var(--primary);
+    }
+  }
+
+  .button-light {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+
+    &:hover {
+      background-color: var(--secondary-light);
+      box-shadow: 4px 2px 0 0 var(--primary-light);
+    }
+  }
+
+  .button-dark {
+    background-color: var(--primary-dark);
+    color: var(--primary-light);
+
+    &:hover {
+      background-color: var(--secondary-dark);
+      box-shadow: 4px 2px 0 0 var(--primary-dark);
     }
   }
 </style>
