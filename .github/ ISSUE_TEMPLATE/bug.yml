@@ -1,8 +1,7 @@
 name: "\U0001F41B Bug Report"
 description: Crear un nuevo ticket para un bug.
 title: "\U0001F41B [BUG] - <title>"
-labels:
-  - bug
+labels: ['bug']
 body:
   - type: textarea
     id: description
@@ -26,9 +25,9 @@ body:
       label: Pasos para reproducir el problema
       description: 'Por favor, agrega una descripción explícita del problema.'
       value: |
-        1. Ir a '...'
-        2. Hacer clic en '...'
-        3. Desplazarse hasta '...'
+        1. Ir a...
+        2. Hacer clic en...
+        3. Desplazarse hasta...
         4. Ver error
       render: bash
     validations:
@@ -37,7 +36,7 @@ body:
     id: screenshot
     attributes:
       label: Screenshots
-      description: >-
+      description: |
         Si procede, añade capturas de pantalla para ayudar a explicar su
         problema.
       value: |
@@ -49,7 +48,7 @@ body:
     id: logs
     attributes:
       label: Logs
-      description: >-
+      description: |
         Por favor, copia y pega cualquier log relevante. Esto se formateará
         automáticamente en código, por lo que no es necesario usar comillas.
       render: bash
