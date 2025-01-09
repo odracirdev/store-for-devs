@@ -1,13 +1,13 @@
-name: "\U0001F41B Bug Report"
+name: "🐛 Bug Report"
 description: Crear un nuevo ticket para un bug.
-title: "\U0001F41B [BUG] - <title>"
-labels: ['bug']
+title: "🐛 [BUG] - Título"
+labels: ["bug"]
 body:
   - type: textarea
     id: description
     attributes:
       label: Descripción
-      description: 'Por favor, agrega una descripción explícita del problema.'
+      description: Por favor, agrega una descripción explícita del problema.
       placeholder: Descripción breve y explícita del incidente...
     validations:
       required: true
@@ -23,7 +23,7 @@ body:
     id: reprod
     attributes:
       label: Pasos para reproducir el problema
-      description: 'Por favor, agrega una descripción explícita del problema.'
+      description: Por favor, agrega una descripción explícita del problema.
       value: |
         1. Ir a...
         2. Hacer clic en...
