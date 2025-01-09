@@ -1,0 +1,80 @@
+name: "🐛 Bug Report"
+description: Crear un nuevo ticket para un bug.
+title: "🐛 [BUG] - <title>"
+labels: [
+  "bug"
+]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Descripción"
+      description: Por favor, agrega una descripción explícita del problema.
+      placeholder: Descripción breve y explícita del incidente...
+    validations:
+      required: true
+  - type: input
+    id: reprod-url
+    attributes:
+      label: "URL de Reproducción"
+      description: Agrega la URL de la página donde se presenta el problema.
+      placeholder: ej. https://storefordevs.com/contacto
+    validations:
+      required: false
+  - type: textarea
+    id: reprod
+    attributes:
+      label: "Pasos para reproducir el problema"
+      description: Por favor, agrega una descripción explícita del problema.
+      value: |
+        1. Ir a '...'
+        2. Hacer clic en '...'
+        3. Desplazarse hasta '...'
+        4. Ver error
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: "Screenshots"
+      description: Si procede, añade capturas de pantalla para ayudar a explicar su problema.
+      value: |
+        ![DESCRIPTION](LINK.png)
+      render: bash
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs"
+      description: Por favor, copia y pega cualquier log relevante. Esto se formateará automáticamente en código, por lo que no es necesario usar comillas.
+      render: bash
+    validations:
+      required: false
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: "Navegadores"
+      description: ¿En qué navegadores ves el problema?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Opera
+    validations:
+      required: false
+  - type: dropdown
+    id: os
+    attributes:
+      label: "Sistema Operativo"
+      description: ¿Cuál es el entorno afectado?
+      multiple: true
+      options:
+        - Windows
+        - Linux
+        - Mac
+    validations:
+      required: false
