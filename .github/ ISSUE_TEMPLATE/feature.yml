@@ -1,6 +1,6 @@
-name: "💡 Feature Request"
+name: "Feature Request"
 description: Crear un nuevo ticket para una nueva solicitud de función
-title: "💡 [REQUEST] - Título"
+title: "[REQUEST] - Título"
 labels: ['question']
 body:
   - type: textarea
