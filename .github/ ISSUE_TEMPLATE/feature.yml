@@ -1,24 +1,23 @@
-name: "💡 Feature Request"
+name: "\U0001F4A1 Feature Request"
 description: Crear un nuevo ticket para una nueva solicitud de función
-title: "💡 [REQUEST] - <title>"
-labels: [
-  "question"
-]
+title: "\U0001F4A1 [REQUEST] - <title>"
+labels:
+  - question
 body:
   - type: textarea
     id: descripcion
     attributes:
       label: Solicitud de función / característica
-      description: Por favor, descríbelo.
+      description: 'Por favor, descríbelo.'
       placeholder: Una descripción clara y concisa del feature.
-      value: "Me gustaría que [...]"
+      value: 'Me gustaría que [...]'
     validations:
       required: true
   - type: textarea
     id: propuesta
     attributes:
       label: Propuesta de solución
-      description: Por favor, descríbelo.
+      description: 'Por favor, descríbelo.'
       placeholder: Una descripción clara y concisa de lo que quieres que ocurra.
     validations:
       required: false
@@ -26,15 +25,19 @@ body:
     id: alternativa
     attributes:
       label: Alternativas consideradas
-      description: Por favor, descríbelas.
-      placeholder: Una descripción clara y concisa de las soluciones o características alternativas que has considerado.
+      description: 'Por favor, descríbelas.'
+      placeholder: >-
+        Una descripción clara y concisa de las soluciones o características
+        alternativas que has considerado.
     validations:
       required: false
   - type: textarea
     id: contexto
     attributes:
       label: Contexto adicional
-      description: Por favor, descríbelo.
-      placeholder: Añade aquí cualquier otro contexto o capturas de pantalla sobre la solicitud de función.
+      description: 'Por favor, descríbelo.'
+      placeholder: >-
+        Añade aquí cualquier otro contexto o capturas de pantalla sobre la
+        solicitud de función.
     validations:
       required: false

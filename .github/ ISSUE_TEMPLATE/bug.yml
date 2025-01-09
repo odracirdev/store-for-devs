@@ -1,31 +1,30 @@
-name: "🐛 Bug Report"
+name: "\U0001F41B Bug Report"
 description: Crear un nuevo ticket para un bug.
-title: "🐛 [BUG] - <title>"
-labels: [
-  "bug"
-]
+title: "\U0001F41B [BUG] - <title>"
+labels:
+  - bug
 body:
   - type: textarea
     id: description
     attributes:
-      label: "Descripción"
-      description: Por favor, agrega una descripción explícita del problema.
+      label: Descripción
+      description: 'Por favor, agrega una descripción explícita del problema.'
       placeholder: Descripción breve y explícita del incidente...
     validations:
       required: true
   - type: input
     id: reprod-url
     attributes:
-      label: "URL de Reproducción"
+      label: URL de Reproducción
       description: Agrega la URL de la página donde se presenta el problema.
-      placeholder: ej. https://storefordevs.com/contacto
+      placeholder: 'ej. https://storefordevs.com/contacto'
     validations:
       required: false
   - type: textarea
     id: reprod
     attributes:
-      label: "Pasos para reproducir el problema"
-      description: Por favor, agrega una descripción explícita del problema.
+      label: Pasos para reproducir el problema
+      description: 'Por favor, agrega una descripción explícita del problema.'
       value: |
         1. Ir a '...'
         2. Hacer clic en '...'
@@ -37,8 +36,10 @@ body:
   - type: textarea
     id: screenshot
     attributes:
-      label: "Screenshots"
-      description: Si procede, añade capturas de pantalla para ayudar a explicar su problema.
+      label: Screenshots
+      description: >-
+        Si procede, añade capturas de pantalla para ayudar a explicar su
+        problema.
       value: |
         ![DESCRIPTION](LINK.png)
       render: bash
@@ -47,15 +48,17 @@ body:
   - type: textarea
     id: logs
     attributes:
-      label: "Logs"
-      description: Por favor, copia y pega cualquier log relevante. Esto se formateará automáticamente en código, por lo que no es necesario usar comillas.
+      label: Logs
+      description: >-
+        Por favor, copia y pega cualquier log relevante. Esto se formateará
+        automáticamente en código, por lo que no es necesario usar comillas.
       render: bash
     validations:
       required: false
   - type: dropdown
     id: browsers
     attributes:
-      label: "Navegadores"
+      label: Navegadores
       description: ¿En qué navegadores ves el problema?
       multiple: true
       options:
@@ -69,7 +72,7 @@ body:
   - type: dropdown
     id: os
     attributes:
-      label: "Sistema Operativo"
+      label: Sistema Operativo
       description: ¿Cuál es el entorno afectado?
       multiple: true
       options:
