@@ -1,0 +1,41 @@
+---
+import BentoCategories from '@components/ui/BentoCategories.astro';
+---
+
+<section class="categories-wrapper">
+  <h2><span>Nuestras Librerías</span></h2>
+  <BentoCategories />
+</section>
+
+<style>
+  .categories-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & h2 {
+      text-transform: uppercase;
+      text-align: center;
+      padding: 40px 0;
+      position: relative;
+      width: 100%;
+
+      & span {
+        background-color: var(--primary-dark);
+        padding: 0 20px;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        height: 2px;
+        width: 100%;
+        background-color: var(--primary-light);
+        opacity: 0.3;
+        top: 50%;
+        left: 0;
+        z-index: -1;
+      }
+    }
+  }
+</style>
