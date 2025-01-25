@@ -1,0 +1,101 @@
+<div class="categories">
+  <div class="category-item category-1">
+    <img src="https://placehold.co/600x400?text=Poleras" />
+  </div>
+  <div class="category-item category-2">
+    <img src="https://placehold.co/600x400?text=Polerones" />
+  </div>
+  <div class="category-item category-3">
+    <img src="https://placehold.co/600x400?text=Polerones" />
+  </div>
+  <div class="category-item category-4">
+    <img src="https://placehold.co/600x400?text=Poleras" />
+  </div>
+</div>
+
+<style>
+  .categories {
+    width: 100%;
+    height: 600px;
+
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 20px;
+
+    & .category-item {
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      font-size: 2rem;
+      border-radius: 20px;
+
+      & img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px;
+      }
+    }
+
+    & .category-1 {
+      grid-area: 1 / 1 / 3 / 6;
+    }
+
+    & .category-2 {
+      grid-area: 1 / 6 / 3 / 13;
+    }
+
+    & .category-3 {
+      grid-area: 3 / 1 / 5 / 8;
+    }
+
+    & .category-4 {
+      grid-area: 3 / 8 / 5 / 13;
+    }
+  }
+
+  @media (width <= 768px) {
+    .categories {
+      & .category-1 {
+        grid-area: 1 / 1 / 3 / 7;
+      }
+
+      & .category-2 {
+        grid-area: 1 / 7 / 3 / 13;
+      }
+
+      & .category-3 {
+        grid-area: 3 / 1 / 5 / 7;
+      }
+
+      & .category-4 {
+        grid-area: 3 / 7 / 5 / 13;
+      }
+    }
+  }
+
+  @media (width <= 480px) {
+    .categories {
+      height: 820px;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(8, 1fr);
+
+      & .category-1 {
+        grid-area: 1 / 1 / 3 / 2;
+      }
+
+      & .category-2 {
+        grid-area: 3 / 1 / 5 / 2;
+      }
+
+      & .category-3 {
+        grid-area: 5 / 1 / 7 / 2;
+      }
+
+      & .category-4 {
+        grid-area: 7 / 1 / 9 / 2;
+      }
+    }
+  }
+</style>
