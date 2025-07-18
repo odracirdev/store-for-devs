@@ -1,15 +1,15 @@
 ---
-const { img, category, title, price } = Astro.props
+const { img, category, title, price, href = "#" } = Astro.props
 ---
 
-<div class="product-card-container">
+<a href={href} class="product-card-container">
   <img class="product-image" src={img} alt={title} />
   <div class="product-info">
     <h4 class="product-category">{category}</h4>
     <h3 class="product-title">{title}</h3>
     <p class="product-price">{price}</p>
   </div>
-</div>
+</a>
 
 <style>
   .product-card-container {
@@ -17,12 +17,27 @@ const { img, category, title, price } = Astro.props
     flex-direction: column;
     gap: 12px;
     max-width: 280px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 16px;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
 
     & .product-image {
       width: 100%;
       object-fit: cover;
       aspect-ratio: 1;
       border-radius: 16px;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover .product-image {
+      transform: scale(1.05);
     }
 
     & .product-info {

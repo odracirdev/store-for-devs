@@ -24,6 +24,7 @@ try {
           category={product.category} 
           title={product.name} 
           price={product.onSale && product.salePrice ? `$${product.salePrice}` : `$${product.price}`}
+          href={`/producto/${product.slug}`}
         />
       ))
     ) : (
