@@ -106,7 +106,8 @@
 			"!**/node_modules/**",
 			"!**/dist/**",
 			"!**/tsconfig.json",
-			"!**/jsconfig.json"
+			"!**/jsconfig.json",
+			"!**/*.astro"
 		]
 	}
 }
