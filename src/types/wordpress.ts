@@ -88,13 +88,32 @@ export interface Product {
 	regularPrice: string
 	salePrice?: string
 	onSale: boolean
-	image: string
-	imageAlt: string
+	image: string[]
+	imageAlt: string[]
 	category: string
 	description: string
 	shortDescription: string
 	featured: boolean
 	totalSales: number
+	stockStatus: string
+	stockQuantity: number | null
+	weight: string
+	dimensions: {
+		length: string
+		width: string
+		height: string
+	}
+	shippingClass: string
+	shippingClassId: number
+	attributes: unknown[]
+	variations: number[]
+	relatedIds: number[]
+	upsellIds: number[]
+	crossSellIds: number[]
+	reviewsAllowed: boolean
+	averageRating: string
+	ratingCount: number
+	permalink: string
 }
 
 // Tipo para categorías

@@ -1,6 +1,5 @@
 ---
 import Main from '../../layouts/Main.astro'
-import Button from '../../components/ui/Button.astro'
 import ProductCard from '../../components/ui/ProductCard.astro'
 import { wordpressService } from '../../services/wordpress'
 
@@ -21,6 +20,7 @@ export async function getStaticPaths() {
 
 // Obtener producto y productos relacionados desde props
 const { product, allProducts } = Astro.props
+console.log('Product:', product)
 
 // Obtener productos relacionados de la misma categoría
 const relatedProducts = allProducts
@@ -51,7 +51,7 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
     <div class="product-main">
       <div class="product-gallery">
         <div class="main-image">
-          <img src={product.image} alt={product.name} />
+          <img src={product.image[0]} alt={product.imageAlt[0]} />
           {hasDiscount && (
             <div class="discount-badge">
               <span class="i-tabler-rosette-discount"></span>
@@ -60,10 +60,15 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
           )}
         </div>
         
-        <!-- Galería de imágenes adicionales (placeholder) -->
+        <!-- Galería de imágenes adicionales -->
         <div class="image-thumbnails">
-          <img src={product.image} alt={`${product.name} - Vista 1`} class="thumbnail active" />
-          <img src={product.image} alt={`${product.name} - Vista 2`} class="thumbnail" />
+          {product.image.map((img, index) => (
+            <img
+              src={img}
+              alt={product.imageAlt[index] || `${product.name} - Vista ${index + 1}`}
+              class={`thumbnail ${index === 0 ? 'active' : ''}`}
+            />
+          ))}
         </div>
       </div>
 
@@ -295,16 +300,14 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
     & .main-image {
       position: relative;
       margin-bottom: 20px;
-      background: #f8f9fa;
-      border: 1px solid #e9ecef;
       border-radius: 8px;
       overflow: hidden;
 
       & img {
         width: 100%;
-        height: 450px;
         object-fit: cover;
         display: block;
+        aspect-ratio: 1 / 1;
       }
 
       & .discount-badge {
@@ -746,16 +749,9 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
 
     .product-main {
       grid-template-columns: 1fr 1fr;
-      gap: 60px;
     }
 
     .product-gallery {
-      & .main-image {
-        & img {
-          height: 500px;
-        }
-      }
-
       & .image-thumbnails {
         grid-template-columns: repeat(4, 1fr);
         
@@ -789,18 +785,7 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
     .product-page {
       padding: 60px;
     }
-
-    .product-main {
-      gap: 80px;
-    }
-
     .product-gallery {
-      & .main-image {
-        & img {
-          height: 600px;
-        }
-      }
-
       & .image-thumbnails {
         & .thumbnail {
           height: 100px;
