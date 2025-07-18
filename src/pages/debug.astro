@@ -1,0 +1,76 @@
+---
+import { wordpressService } from '../services/wordpress';
+
+// Probar la conexión
+const connectionTest = await wordpressService.testConnection();
+console.log('Connection test result:', connectionTest);
+---
+
+<html>
+<head>
+    <title>WordPress Connection Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        pre { 
+            background: #f5f5f5; 
+            padding: 10px; 
+            border-radius: 5px; 
+            overflow-x: auto; 
+        }
+    </style>
+</head>
+<body>
+    <h1>WordPress Connection Diagnostic</h1>
+    
+    <h2>Configuration:</h2>
+    <ul>
+        <li><strong>Base URL:</strong> {import.meta.env.WORDPRESS_API_URL || 'No configurada'}</li>
+        <li><strong>Consumer Key:</strong> {import.meta.env.WORDPRESS_CONSUMER_KEY ? '✅ Configurada' : '❌ No configurada'}</li>
+        <li><strong>Consumer Secret:</strong> {import.meta.env.WORDPRESS_CONSUMER_SECRET ? '✅ Configurada' : '❌ No configurada'}</li>
+    </ul>
+
+    <h2>Connection Test:</h2>
+    <div class={connectionTest.success ? 'success' : 'error'}>
+        <h3>{connectionTest.success ? '✅ SUCCESS' : '❌ ERROR'}</h3>
+        <p><strong>Message:</strong> {connectionTest.message}</p>
+        {connectionTest.details && (
+            <div>
+                <strong>Details:</strong>
+                <pre>{JSON.stringify(connectionTest.details, null, 2)}</pre>
+            </div>
+        )}
+    </div>
+
+    <h2>Manual Tests:</h2>
+    <p>Prueba estas URLs manualmente en tu navegador:</p>
+    <ul>
+        <li><a href="https://storefordevs.com/wp-json/" target="_blank">https://storefordevs.com/wp-json/</a></li>
+        <li><a href="https://storefordevs.com/wp-json/wc/v3/" target="_blank">https://storefordevs.com/wp-json/wc/v3/</a></li>
+        <li><a href="https://storefordevs.com/wp-json/wp/v2/" target="_blank">https://storefordevs.com/wp-json/wp/v2/</a></li>
+    </ul>
+
+    <h2>Common Issues:</h2>
+    <ul>
+        <li><strong>404 Error:</strong> WooCommerce no está instalado o la URL es incorrecta</li>
+        <li><strong>401/403 Error:</strong> Problema con las credenciales</li>
+        <li><strong>SSL Error:</strong> Problema con certificados HTTPS</li>
+        <li><strong>CORS Error:</strong> Problema de política de mismo origen</li>
+    </ul>
+
+    <h2>Next Steps:</h2>
+    <ol>
+        <li>Verifica que WooCommerce esté instalado y activo en WordPress</li>
+        <li>Asegúrate de que los permalinks no estén en "Plain"</li>
+        <li>Verifica las credenciales API en WooCommerce > Settings > Advanced > REST API</li>
+        <li>Comprueba que el sitio tenga SSL (HTTPS) funcionando</li>
+    </ol>
+</body>
+</html>
