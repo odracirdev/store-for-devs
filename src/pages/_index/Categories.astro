@@ -28,13 +28,14 @@ try {
     & h2 {
       text-transform: uppercase;
       text-align: center;
-      padding: 40px 0;
+      padding: 30px 0;
       position: relative;
       width: 100%;
+      font-size: 24px;
 
       & span {
         background-color: var(--primary-dark);
-        padding: 0 20px;
+        padding: 0 15px;
       }
 
       &::before {
@@ -47,6 +48,30 @@ try {
         top: 50%;
         left: 0;
         z-index: -1;
+      }
+    }
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .categories-wrapper {
+      & h2 {
+        padding: 35px 0;
+        font-size: 28px;
+        
+        & span {
+          padding: 0 20px;
+        }
+      }
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .categories-wrapper {
+      & h2 {
+        padding: 40px 0;
+        font-size: 32px;
       }
     }
   }

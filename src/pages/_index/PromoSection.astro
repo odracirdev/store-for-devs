@@ -11,9 +11,25 @@ import Promo from '@components/ui/Promo.astro'
 <style>
   .promo-wrapper {
     display: flex;
-    gap: 20px;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 15px;
+    margin: 30px 0;
+  }
 
-    margin: 60px;
+  /* Tablet */
+  @media (width >= 768px) {
+    .promo-wrapper {
+      flex-direction: row;
+      gap: 20px;
+      justify-content: space-between;
+      margin: 40px 0;
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .promo-wrapper {
+      margin: 60px 0;
+    }
   }
 </style>

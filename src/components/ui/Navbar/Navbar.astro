@@ -28,16 +28,17 @@ import logo from '@images/assets/logo.webp'
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
+    padding: 15px 20px;
     max-width: 1080px;
     margin: 0 auto;
+    flex-wrap: wrap;
 
     & ul {
       list-style: none;
       padding: 0;
-
+      margin: 0;
       display: flex;
-      gap: 24px;
+      gap: 16px;
     }
 
     & a {
@@ -47,20 +48,80 @@ import logo from '@images/assets/logo.webp'
     }
 
     & .logo {
-      margin-right: 40px;
+      margin-right: 20px;
+      
+      & img {
+        height: auto;
+        max-width: 70px;
+      }
     }
 
     & .navbar {
       flex: 1;
+      display: none;
 
       & a {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 700;
       }
     }
 
     & .account-items {
       gap: 12px;
+      
+      & a {
+        font-size: 14px;
+      }
+    }
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .navbar-wrapper {
+      padding: 20px 40px;
+      
+      & .logo {
+        margin-right: 40px;
+        
+        & img {
+          max-width: 80px;
+        }
+      }
+      
+      & .navbar {
+        display: flex;
+        
+        & a {
+          font-size: 18px;
+        }
+      }
+      
+      & ul {
+        gap: 20px;
+      }
+      
+      & .account-items a {
+        font-size: 16px;
+      }
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .navbar-wrapper {
+      flex-wrap: nowrap;
+      
+      & .logo img {
+        max-width: 90px;
+      }
+      
+      & .navbar a {
+        font-size: 20px;
+      }
+      
+      & ul {
+        gap: 24px;
+      }
     }
   }
 </style>

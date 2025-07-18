@@ -15,14 +15,23 @@ const { href, target = '_self', rel = 'nofollow', content, color = 'default' } =
 <style>
   .button {
     width: max-content;
-    margin: 20px 0;
-    padding: 8px 16px;
+    margin: 15px 0;
+    padding: 12px 24px;
     border-radius: 9999px;
     box-shadow: 0 0 0 0 transparent;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    min-width: 140px;
 
     transition:
       box-shadow,
       background-color,
+      transform,
       ease-in-out 0.3s;
 
     &:hover {
@@ -57,6 +66,25 @@ const { href, target = '_self', rel = 'nofollow', content, color = 'default' } =
     &:hover {
       background-color: var(--secondary-dark);
       box-shadow: 4px 2px 0 0 var(--primary-dark);
+    }
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .button {
+      margin: 20px 0;
+      padding: 14px 28px;
+      font-size: 16px;
+      min-width: 160px;
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .button {
+      padding: 16px 32px;
+      font-size: 18px;
+      min-width: 180px;
     }
   }
 </style>
