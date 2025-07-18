@@ -1,2 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../.astro/types.d.ts" />
+interface ImportMetaEnv {
+	readonly WORDPRESS_API_URL: string
+	readonly WORDPRESS_CONSUMER_KEY: string
+	readonly WORDPRESS_CONSUMER_SECRET: string
+}
+
+interface ImportMeta {
+	readonly env: ImportMetaEnv
+}
