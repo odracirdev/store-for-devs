@@ -1,4 +1,10 @@
-import type { WordPressProduct, Product, Category } from '../types/wordpress'
+import type {
+	WordPressProduct,
+	Product,
+	Category,
+	WordPressReview,
+	Review,
+} from '../types/wordpress'
 
 class WordPressService {
 	private baseUrl: string
@@ -225,6 +231,37 @@ class WordPressService {
 			image: cat.image?.src,
 			count: cat.count,
 		}))
+	}
+
+	// Método para obtener reseñas de un producto
+	async getProductReviews(productId: number): Promise<Review[]> {
+		try {
+			const reviews = (await this.fetchFromAPI(`/products/reviews`, {
+				product: productId.toString(),
+				status: 'approved',
+			})) as WordPressReview[]
+
+			return reviews.map((review) => this.transformWordPressReview(review))
+		} catch (error) {
+			console.error('Error fetching product reviews:', error)
+			return []
+		}
+	}
+
+	// Transformar reseña de WordPress a formato interno
+	private transformWordPressReview(wpReview: WordPressReview): Review {
+		return {
+			id: wpReview.id,
+			dateCreated: wpReview.date_created,
+			productId: wpReview.product_id,
+			status: wpReview.status,
+			reviewer: wpReview.reviewer,
+			reviewerEmail: wpReview.reviewer_email,
+			review: wpReview.review,
+			rating: wpReview.rating,
+			verified: wpReview.verified,
+			reviewerAvatar: wpReview.reviewer_avatar_urls['48'] || wpReview.reviewer_avatar_urls['96'],
+		}
 	}
 }
 

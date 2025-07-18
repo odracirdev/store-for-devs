@@ -126,3 +126,35 @@ export interface Category {
 	image?: string
 	count: number
 }
+
+// Tipos para reseñas
+export interface WordPressReview {
+	id: number
+	date_created: string
+	date_created_gmt: string
+	product_id: number
+	status: string
+	reviewer: string
+	reviewer_email: string
+	review: string
+	rating: number
+	verified: boolean
+	reviewer_avatar_urls: {
+		'24': string
+		'48': string
+		'96': string
+	}
+}
+
+export interface Review {
+	id: number
+	dateCreated: string
+	productId: number
+	status: string
+	reviewer: string
+	reviewerEmail: string
+	review: string
+	rating: number
+	verified: boolean
+	reviewerAvatar: string
+}

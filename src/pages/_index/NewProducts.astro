@@ -21,7 +21,7 @@ try {
       newProducts.length > 0 ? (
         newProducts.map(product => (
           <ProductCard
-            img={product.image}
+            img={product.image[0] || 'https://placehold.co/300'}
             category={product.category}
             title={product.name}
             price={product.onSale && product.salePrice ? `$${product.salePrice}` : `$${product.price}`}

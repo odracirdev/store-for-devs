@@ -1,0 +1,132 @@
+---
+interface Props {
+  images: string[]
+  imageAlts: string[]
+  productName: string
+  hasDiscount?: boolean
+  discountPercentage?: number
+}
+
+const { images, imageAlts, productName, hasDiscount = false, discountPercentage } = Astro.props
+---
+
+<div class="product-gallery">
+  <div class="main-image">
+    <img src={images[0]} alt={imageAlts[0]} />
+    {hasDiscount && discountPercentage && (
+      <div class="discount-badge">
+        <span class="i-tabler-rosette-discount"></span>
+        -{discountPercentage}%
+      </div>
+    )}
+  </div>
+  
+  <!-- Galería de imágenes adicionales -->
+  <div class="image-thumbnails">
+    {images.map((img: string, index: number) => (
+      <img
+        src={img}
+        alt={imageAlts[index] || `${productName} - Vista ${index + 1}`}
+        class={`thumbnail ${index === 0 ? 'active' : ''}`}
+      />
+    ))}
+  </div>
+</div>
+
+<style>
+  .product-gallery {
+    & .main-image {
+      position: relative;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+
+      & img {
+        width: 100%;
+        object-fit: cover;
+        display: block;
+        aspect-ratio: 1 / 1;
+      }
+
+      & .discount-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--primary);
+        color: var(--bg-primary);
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+    }
+
+    & .image-thumbnails {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+
+      & .thumbnail {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 4px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+        border: 2px solid transparent;
+
+        &:hover,
+        &.active {
+          opacity: 1;
+          border-color: var(--primary);
+        }
+      }
+    }
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .product-gallery {
+      & .image-thumbnails {
+        grid-template-columns: repeat(4, 1fr);
+        
+        & .thumbnail {
+          height: 80px;
+        }
+      }
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .product-gallery {
+      & .image-thumbnails {
+        & .thumbnail {
+          height: 100px;
+        }
+      }
+    }
+  }
+</style>
+
+<script>
+  // Funcionalidad de galería
+  document.addEventListener('DOMContentLoaded', function() {
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.querySelector('.main-image img') as HTMLImageElement;
+    
+    thumbnails.forEach(thumb => {
+      thumb.addEventListener('click', function(this: HTMLImageElement) {
+        thumbnails.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        if (mainImage) {
+          mainImage.src = this.src;
+        }
+      });
+    });
+  });
+</script>

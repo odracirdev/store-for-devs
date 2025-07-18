@@ -1,200 +1,111 @@
 ---
 import Main from '../../layouts/Main.astro'
-import ProductCard from '../../components/ui/ProductCard.astro'
+import ProductBreadcrumb from '../../components/product/ProductBreadcrumb.astro'
+import ProductGallery from '../../components/product/ProductGallery.astro'
+import ProductInfo from '../../components/product/ProductInfo.astro'
+import ProductDetails from '../../components/product/ProductDetails.astro'
+import ProductReviews from '../../components/product/ProductReviews.astro'
+import RelatedProducts from '../../components/product/RelatedProducts.astro'
 import { wordpressService } from '../../services/wordpress'
 import sanitizeHtml from 'sanitize-html'
 
 // Generar rutas estáticas para todos los productos
 export async function getStaticPaths() {
-  try {
-    const products = await wordpressService.getProducts()
-    
-    return products.map((product: any) => ({
-      params: { slug: product.slug },
-      props: { product, allProducts: products }
-    }))
-  } catch (error) {
-    console.error('Error loading products for static paths:', error)
-    return []
-  }
+	try {
+		const products = await wordpressService.getProducts()
+
+		return products.map((product: any) => ({
+			params: { slug: product.slug },
+			props: { product, allProducts: products },
+		}))
+	} catch (error) {
+		console.error('Error loading products for static paths:', error)
+		return []
+	}
 }
 
 // Obtener producto y productos relacionados desde props
 const { product, allProducts } = Astro.props
-console.log('Product:', product)
+
+// Obtener reseñas del producto
+let productReviews: any[] = []
+try {
+	productReviews = await wordpressService.getProductReviews(product.id)
+} catch (error) {
+	console.error('Error loading product reviews:', error)
+}
 
 // Obtener productos relacionados de la misma categoría
 const relatedProducts = allProducts
-  .filter((p: any) => p.category === product.category && p.id !== product.id)
-  .slice(0, 4)
+	.filter((p: any) => p.category === product.category && p.id !== product.id)
+	.slice(0, 4)
 
 // Calcular precio con descuento si aplica
 const hasDiscount = product.onSale && product.salePrice
 const originalPrice = product.price
 const salePrice = hasDiscount ? product.salePrice : null
-const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice) / originalPrice) * 100) : null
+const discountPercentage = hasDiscount
+	? Math.round(((originalPrice - salePrice) / originalPrice) * 100)
+	: null
 
 // Sanitizar descripción del producto
 const sanitizedDescription = sanitizeHtml(product.description, {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat(['h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'li', 'p', 'strong', 'em', 'code', 'b', 'span', 'i']),
-  allowedAttributes: {
-    '*': ['data-start', 'data-end'] // Permitir atributos personalizados
-  }
-});
+	allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+		'h2',
+		'h3',
+		'h4',
+		'h5',
+		'h6',
+		'ol',
+		'ul',
+		'li',
+		'p',
+		'strong',
+		'em',
+		'code',
+		'b',
+		'span',
+		'i',
+	]),
+	allowedAttributes: {
+		'*': ['data-start', 'data-end'], // Permitir atributos personalizados
+	},
+})
 ---
 
 <Main title={`${product.name} - Store for Devs`} description={product.description}>
   <div class="product-page">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-      <a href="/">Inicio</a>
-      <span>/</span>
-      <a href="/productos">Productos</a>
-      <span>/</span>
-      <span>{product.category}</span>
-      <span>/</span>
-      <span>{product.name}</span>
-    </nav>
+    <ProductBreadcrumb category={product.category} productName={product.name} />
 
-    <!-- Producto Principal -->
     <div class="product-main">
-      <div class="product-gallery">
-        <div class="main-image">
-          <img src={product.image[0]} alt={product.imageAlt[0]} />
-          {hasDiscount && (
-            <div class="discount-badge">
-              <span class="i-tabler-rosette-discount"></span>
-              -{discountPercentage}%
-            </div>
-          )}
-        </div>
-        
-        <!-- Galería de imágenes adicionales -->
-        <div class="image-thumbnails">
-          {product.image.map((img: string, index: number) => (
-            <img
-              src={img}
-              alt={product.imageAlt[index] || `${product.name} - Vista ${index + 1}`}
-              class={`thumbnail ${index === 0 ? 'active' : ''}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div class="product-info">
-        <h1 class="product-title">{product.name}</h1>
-        
-        <div class="product-price">
-          {hasDiscount ? (
-            <div class="price-with-discount">
-              <span class="sale-price">${salePrice}</span>
-              <span class="original-price">${originalPrice}</span>
-            </div>
-          ) : (
-            <span class="current-price">${originalPrice}</span>
-          )}
-        </div>
-
-        <div class="product-options">
-          <div class="option-group">
-            <label for="color">Color</label>
-            <select id="color" class="option-select">
-              {product.attributes.find((attr: { name: string; options: string[] }) => attr.name.toLowerCase() === 'color')?.options.map((color: string) => (
-                <option value={color.toLowerCase()}>{color}</option>
-              ))}
-            </select>
-          </div>
-
-          <div class="option-group">
-            <label for="size">Talla</label>
-            <select id="size" class="option-select">
-              {product.attributes.find((attr: { name: string; options: string[] }) => attr.name.toLowerCase() === 'talla')?.options.map((size: string) => (
-                <option value={size.toLowerCase()}>{size}</option>
-              ))}
-            </select>
-          </div>
-
-          <div class="quantity-group">
-            <div class="quantity-controls">
-              <button class="quantity-btn" id="decrease">-</button>
-              <span class="quantity-display" id="quantity">1</span>
-              <button class="quantity-btn" id="increase">+</button>
-            </div>
-            <button class="add-to-cart-btn">
-              <span class="i-tabler-shopping-cart"></span>
-              Añadir al carrito
-            </button>
-          </div>
-        </div>
-
-        <div class="product-actions">
-          <button class="wishlist-btn">
-            <span class="i-tabler-heart"></span>
-          </button>
-          <button class="share-btn">
-            <span class="i-tabler-share-3"></span>
-          </button>
-        </div>
-
-        <div class="product-meta">
-          <div class="meta-item">
-            <strong>Etiquetas:</strong>
-            <span>{product.tags.join(', ')}</span>
-          </div>
-          <div class="meta-item">
-            <strong>Categoría:</strong>
-            <span>{product.category}</span>
-          </div>
-        </div>
-      </div>
+      <ProductGallery 
+        images={product.image} 
+        imageAlts={product.imageAlt} 
+        productName={product.name}
+        hasDiscount={hasDiscount}
+        discountPercentage={discountPercentage || undefined}
+      />
+      
+      <ProductInfo 
+        name={product.name}
+        price={originalPrice}
+        salePrice={salePrice}
+        hasDiscount={hasDiscount}
+        attributes={product.attributes}
+        tags={product.tags}
+        category={product.category}
+      />
     </div>
 
-    <!-- Detalles del producto -->
-    <section class="product-details">
-      <div class="description-content" set:html={sanitizedDescription}></div>
+    <ProductDetails sanitizedDescription={sanitizedDescription} />
 
-      <div class="reviews-content">
-        <div class="no-reviews">
-          <h3>Valoraciones</h3>
-          <p>No hay reseñas todavía.</p>
-          <p>Sé el primero en valorar "{product.name}"</p>
-          
-          <div class="review-form">
-            <h4>Añadir una valoración</h4>
-            <div class="rating-input">
-              <label>Tu valoración *</label>
-              <div class="stars-input">
-                <span class="star" data-rating="1">☆</span>
-                <span class="star" data-rating="2">☆</span>
-                <span class="star" data-rating="3">☆</span>
-                <span class="star" data-rating="4">☆</span>
-                <span class="star" data-rating="5">☆</span>
-              </div>
-            </div>
-            <textarea placeholder="Tu reseña *" rows="4"></textarea>
-            <button type="submit" class="submit-review">Enviar</button>
-          </div>
-        </div>
-      </div>
-    </section>
+    <ProductReviews 
+      reviews={productReviews} 
+      productName={product.name}
+      reviewsAllowed={product.reviewsAllowed}
+    />
 
-    <!-- Productos Relacionados -->
-    {relatedProducts.length > 0 && (
-      <section class="related-products">
-        <h2>Productos relacionados</h2>
-        <div class="products-grid">
-          {relatedProducts.map(relatedProduct => (
-            <ProductCard
-              img={relatedProduct.image}
-              category={relatedProduct.category}
-              title={relatedProduct.name}
-              price={relatedProduct.onSale && relatedProduct.salePrice ? `$${relatedProduct.salePrice}` : `$${relatedProduct.price}`}
-              href={`/producto/${relatedProduct.slug}`}
-            />
-          ))}
-        </div>
-      </section>
-    )}
+    <RelatedProducts products={relatedProducts} />
   </div>
 </Main>
 
@@ -206,421 +117,11 @@ const sanitizedDescription = sanitizeHtml(product.description, {
     background: var(--bg-primary);
   }
 
-  /* Breadcrumb */
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 30px;
-    font-size: 14px;
-    color: var(--text-secondary);
-
-    & a {
-      color: var(--primary);
-      text-decoration: none;
-      
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    & span:not(:last-child) {
-      color: var(--text-secondary);
-    }
-
-    & span:last-child {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-  }
-
-  /* Producto Principal */
   .product-main {
     display: grid;
     grid-template-columns: 1fr;
     gap: 40px;
     margin-bottom: 60px;
-  }
-
-  /* Galería de Producto */
-  .product-gallery {
-    & .main-image {
-      position: relative;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      overflow: hidden;
-
-      & img {
-        width: 100%;
-        object-fit: cover;
-        display: block;
-        aspect-ratio: 1 / 1;
-      }
-
-      & .discount-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: var(--primary);
-        color: var(--bg-primary);
-        padding: 8px 12px;
-        border-radius: 4px;
-        font-weight: 700;
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-      }
-    }
-
-    & .image-thumbnails {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-
-      & .thumbnail {
-        width: 100%;
-        height: 100px;
-        object-fit: cover;
-        border-radius: 4px;
-        cursor: pointer;
-        opacity: 0.7;
-        transition: opacity 0.3s ease;
-        border: 2px solid transparent;
-
-        &:hover,
-        &.active {
-          opacity: 1;
-          border-color: var(--primary);
-        }
-      }
-    }
-  }
-
-  /* Información del Producto */
-  .product-info {
-    & .product-title {
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 15px;
-      color: var(--text-primary);
-      line-height: 1.2;
-    }
-
-    & .product-price {
-      margin-bottom: 30px;
-
-      & .price-with-discount {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-
-        & .sale-price {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: var(--primary);
-        }
-
-        & .original-price {
-          font-size: 1.2rem;
-          color: var(--text-secondary);
-          text-decoration: line-through;
-        }
-      }
-
-      & .current-price {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--primary);
-      }
-    }
-
-    & .product-options {
-      margin-bottom: 30px;
-
-      & .option-group {
-        margin-bottom: 20px;
-
-        & label {
-          display: block;
-          margin-bottom: 8px;
-          font-weight: 500;
-          color: var(--text-primary);
-          font-size: 14px;
-        }
-
-        & .option-select {
-          width: 100%;
-          padding: 10px 15px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          background: var(--bg-primary);
-          color: var(--text-primary);
-          font-size: 14px;
-          cursor: pointer;
-
-          &:focus {
-            outline: none;
-            border-color: var(--primary);
-          }
-        }
-      }
-
-      & .quantity-group {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-        flex-wrap: wrap;
-
-        & .quantity-controls {
-          display: flex;
-          align-items: center;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          overflow: hidden;
-
-          & .quantity-btn {
-            width: 42px;
-            height: 42px;
-            border: none;
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s ease;
-
-            &:hover {
-              background: var(--secondary-light);
-            }
-          }
-
-          & .quantity-display {
-            width: 50px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-primary);
-            color: var(--primary-light);
-            font-weight: 600;
-          }
-        }
-
-        & .add-to-cart-btn {
-          padding: 10px 20px;
-          background: var(--primary);
-          color: var(--primary-dark);
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          transition: all 0.3s ease;
-          flex: 1;
-          min-width: 200px;
-          justify-content: center;
-
-          &:hover {
-            background: var(--primary-dark);
-          }
-
-          & span[class^="i-app"] {
-            width: 18px;
-            height: 18px;
-            background-color: currentColor;
-          }
-        }
-      }
-    }
-
-    & .product-actions {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 30px;
-
-      & button {
-        width: 40px;
-        height: 40px;
-        border: 1px solid #ddd;
-        background: var(--bg-primary);
-        color: var(--text-primary);
-        border-radius: 4px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-
-        &:hover {
-          border-color: var(--primary);
-          color: var(--primary);
-        }
-
-        & span[class^="i-app"] {
-          width: 18px;
-          height: 18px;
-          background-color: currentColor;
-        }
-      }
-    }
-
-    & .product-meta {
-      border-top: 1px solid #eee;
-      padding-top: 20px;
-
-      & .meta-item {
-        display: flex;
-        margin-bottom: 10px;
-        font-size: 14px;
-
-        & strong {
-          color: var(--text-primary);
-          margin-right: 10px;
-          min-width: 80px;
-        }
-
-        & span {
-          color: var(--text-secondary);
-        }
-      }
-    }
-  }
-
-  /* Productos Relacionados */
-  .related-products {
-    margin-bottom: 60px;
-
-    & h2 {
-      margin-bottom: 30px;
-      font-size: 1.5rem;
-      color: var(--text-primary);
-      border-bottom: 1px solid #eee;
-      padding-bottom: 15px;
-    }
-
-    & .products-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-  }
-
-  /* Detalles del Producto */
-  .product-details {
-    & .description-content {
-      line-height: 1.6;
-      color: var(--text-secondary);
-
-      & p {
-        margin-bottom: 15px;
-      }
-
-      & h3 {
-        color: var(--text-primary);
-        margin: 25px 0 15px 0;
-        font-size: 1.2rem;
-      }
-
-      & ul {
-        margin-bottom: 20px;
-        padding-left: 20px;
-
-        & li {
-          margin-bottom: 8px;
-          color: var(--text-secondary);
-        }
-      }
-    }
-
-    & .reviews-content {
-      & .no-reviews {
-        text-align: center;
-        padding: 40px 20px;
-
-        & h3 {
-          color: var(--text-primary);
-          margin-bottom: 15px;
-        }
-
-        & p {
-          color: var(--text-secondary);
-          margin-bottom: 10px;
-        }
-
-        & .review-form {
-          text-align: left;
-          max-width: 500px;
-          margin: 30px auto 0;
-
-          & h4 {
-            color: var(--text-primary);
-            margin-bottom: 20px;
-          }
-
-          & .rating-input {
-            margin-bottom: 20px;
-
-            & label {
-              display: block;
-              margin-bottom: 10px;
-              font-weight: 500;
-              color: var(--text-primary);
-            }
-
-            & .stars-input {
-              display: flex;
-              gap: 5px;
-
-              & .star {
-                font-size: 24px;
-                color: #ddd;
-                cursor: pointer;
-                transition: color 0.3s ease;
-
-                &:hover,
-                &.active {
-                  color: var(--primary);
-                }
-              }
-            }
-          }
-
-          & textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            resize: vertical;
-            font-family: inherit;
-            color: var(--text-primary);
-            background: var(--bg-primary);
-
-            &:focus {
-              outline: none;
-              border-color: var(--primary);
-            }
-          }
-
-          & .submit-review {
-            padding: 10px 20px;
-            background: var(--primary);
-            color: var(--bg-primary);
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-
-            &:hover {
-              background: var(--primary-dark);
-            }
-          }
-        }
-      }
-    }
   }
 
   /* Tablet */
@@ -632,34 +133,6 @@ const sanitizedDescription = sanitizeHtml(product.description, {
     .product-main {
       grid-template-columns: 1fr 1fr;
     }
-
-    .product-gallery {
-      & .image-thumbnails {
-        grid-template-columns: repeat(4, 1fr);
-        
-        & .thumbnail {
-          height: 80px;
-        }
-      }
-    }
-
-    .product-info {
-      & .product-title {
-        font-size: 2.2rem;
-      }
-
-      & .product-options {
-        & .quantity-group {
-          flex-wrap: nowrap;
-        }
-      }
-    }
-
-    .related-products {
-      & .products-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
   }
 
   /* Desktop */
@@ -667,105 +140,7 @@ const sanitizedDescription = sanitizeHtml(product.description, {
     .product-page {
       padding: 60px;
     }
-    .product-gallery {
-      & .image-thumbnails {
-        & .thumbnail {
-          height: 100px;
-        }
-      }
-    }
-
-    .product-info {
-      & .product-title {
-        font-size: 2.5rem;
-      }
-    }
-
-    .related-products {
-      & .products-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
   }
 </style>
 
-<script>
-  // Funcionalidad de cantidad
-  document.addEventListener('DOMContentLoaded', function() {
-    const decreaseBtn = document.getElementById('decrease');
-    const increaseBtn = document.getElementById('increase');
-    const quantityDisplay = document.getElementById('quantity');
-    
-    let quantity = 1;
-    
-    decreaseBtn?.addEventListener('click', function() {
-      if (quantity > 1) {
-        quantity--;
-        if (quantityDisplay) quantityDisplay.textContent = quantity.toString();
-      }
-    });
-    
-    increaseBtn?.addEventListener('click', function() {
-      quantity++;
-      if (quantityDisplay) quantityDisplay.textContent = quantity.toString();
-    });
-    
-    // Funcionalidad de galería
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    const mainImage = document.querySelector('.main-image img') as HTMLImageElement;
-    
-    thumbnails.forEach(thumb => {
-      thumb.addEventListener('click', function(this: HTMLImageElement) {
-        thumbnails.forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-        if (mainImage) {
-          mainImage.src = this.src;
-        }
-      });
-    });
-    
-    // Funcionalidad de rating en reseñas
-    const stars = document.querySelectorAll('.star');
-    let currentRating = 0;
-    
-    stars.forEach((star, index) => {
-      star.addEventListener('click', function() {
-        currentRating = index + 1;
-        updateStars();
-      });
-      
-      star.addEventListener('mouseenter', function() {
-        updateStarsHover(index + 1);
-      });
-    });
-    
-    const starsContainer = document.querySelector('.stars-input');
-    if (starsContainer) {
-      starsContainer.addEventListener('mouseleave', function() {
-        updateStars();
-      });
-    }
-    
-    function updateStars() {
-      stars.forEach((star, index) => {
-        if (index < currentRating) {
-          star.textContent = '★';
-          star.classList.add('active');
-        } else {
-          star.textContent = '☆';
-          star.classList.remove('active');
-        }
-      });
-    }
-    
-    function updateStarsHover(rating: number) {
-      stars.forEach((star, index) => {
-        if (index < rating) {
-          star.textContent = '★';
-        } else {
-          star.textContent = '☆';
-        }
-      });
-    }
-  });
-</script>
+

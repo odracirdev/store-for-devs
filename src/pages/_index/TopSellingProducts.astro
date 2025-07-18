@@ -20,7 +20,7 @@ try {
     {bestSellingProducts.length > 0 ? (
       bestSellingProducts.map((product) => (
         <ProductCard 
-          img={product.image} 
+          img={product.image[0] || 'https://placehold.co/300'} 
           category={product.category} 
           title={product.name} 
           price={product.onSale && product.salePrice ? `$${product.salePrice}` : `$${product.price}`}

@@ -1,0 +1,47 @@
+---
+interface Props {
+  category: string
+  productName: string
+}
+
+const { category, productName } = Astro.props
+---
+
+<nav class="breadcrumb">
+  <a href="/">Inicio</a>
+  <span>/</span>
+  <a href="/productos">Productos</a>
+  <span>/</span>
+  <span>{category}</span>
+  <span>/</span>
+  <span>{productName}</span>
+</nav>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    font-size: 14px;
+    color: var(--text-secondary);
+
+    & a {
+      color: var(--primary);
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    & span:not(:last-child) {
+      color: var(--text-secondary);
+    }
+
+    & span:last-child {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+  }
+</style>

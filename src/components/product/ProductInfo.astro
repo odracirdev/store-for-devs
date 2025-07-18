@@ -1,0 +1,324 @@
+---
+interface Attribute {
+  name: string
+  options: string[]
+}
+
+interface Props {
+  name: string
+  price: string
+  salePrice?: string
+  hasDiscount: boolean
+  attributes: Attribute[]
+  tags: string[]
+  category: string
+}
+
+const { name, price, salePrice, hasDiscount, attributes, tags, category } = Astro.props
+---
+
+<div class="product-info">
+  <h1 class="product-title">{name}</h1>
+  
+  <div class="product-price">
+    {hasDiscount && salePrice ? (
+      <div class="price-with-discount">
+        <span class="sale-price">${salePrice}</span>
+        <span class="original-price">${price}</span>
+      </div>
+    ) : (
+      <span class="current-price">${price}</span>
+    )}
+  </div>
+
+  <div class="product-options">
+    <div class="option-group">
+      <label for="color">Color</label>
+      <select id="color" class="option-select">
+        {attributes.find((attr: Attribute) => attr.name.toLowerCase() === 'color')?.options.map((color: string) => (
+          <option value={color.toLowerCase()}>{color}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="option-group">
+      <label for="size">Talla</label>
+      <select id="size" class="option-select">
+        {attributes.find((attr: Attribute) => attr.name.toLowerCase() === 'talla')?.options.map((size: string) => (
+          <option value={size.toLowerCase()}>{size}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="quantity-group">
+      <div class="quantity-controls">
+        <button class="quantity-btn" id="decrease">-</button>
+        <span class="quantity-display" id="quantity">1</span>
+        <button class="quantity-btn" id="increase">+</button>
+      </div>
+      <button class="add-to-cart-btn">
+        <span class="i-tabler-shopping-cart"></span>
+        Añadir al carrito
+      </button>
+    </div>
+  </div>
+
+  <div class="product-actions">
+    <button class="wishlist-btn">
+      <span class="i-tabler-heart"></span>
+    </button>
+    <button class="share-btn">
+      <span class="i-tabler-share-3"></span>
+    </button>
+  </div>
+
+  <div class="product-meta">
+    <div class="meta-item">
+      <strong>Etiquetas:</strong>
+      <span>{tags.join(', ')}</span>
+    </div>
+    <div class="meta-item">
+      <strong>Categoría:</strong>
+      <span>{category}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .product-info {
+    & .product-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    & .product-price {
+      margin-bottom: 30px;
+
+      & .price-with-discount {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        & .sale-price {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: var(--primary);
+        }
+
+        & .original-price {
+          font-size: 1.2rem;
+          color: var(--text-secondary);
+          text-decoration: line-through;
+        }
+      }
+
+      & .current-price {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary);
+      }
+    }
+
+    & .product-options {
+      margin-bottom: 30px;
+
+      & .option-group {
+        margin-bottom: 20px;
+
+        & label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: 500;
+          color: var(--text-primary);
+          font-size: 14px;
+        }
+
+        & .option-select {
+          width: 100%;
+          padding: 10px 15px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          background: var(--bg-primary);
+          color: var(--text-primary);
+          font-size: 14px;
+          cursor: pointer;
+
+          &:focus {
+            outline: none;
+            border-color: var(--primary);
+          }
+        }
+      }
+
+      & .quantity-group {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+
+        & .quantity-controls {
+          display: flex;
+          align-items: center;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          overflow: hidden;
+
+          & .quantity-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background: var(--secondary-light);
+            }
+          }
+
+          & .quantity-display {
+            width: 50px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+            color: var(--primary-light);
+            font-weight: 600;
+          }
+        }
+
+        & .add-to-cart-btn {
+          padding: 10px 20px;
+          background: var(--primary);
+          color: var(--primary-dark);
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.3s ease;
+          flex: 1;
+          min-width: 200px;
+          justify-content: center;
+
+          &:hover {
+            background: var(--primary-dark);
+          }
+
+          & span[class^="i-app"] {
+            width: 18px;
+            height: 18px;
+            background-color: currentColor;
+          }
+        }
+      }
+    }
+
+    & .product-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+
+      & button {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #ddd;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: var(--primary);
+          color: var(--primary);
+        }
+
+        & span[class^="i-app"] {
+          width: 18px;
+          height: 18px;
+          background-color: currentColor;
+        }
+      }
+    }
+
+    & .product-meta {
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+
+      & .meta-item {
+        display: flex;
+        margin-bottom: 10px;
+        font-size: 14px;
+
+        & strong {
+          color: var(--text-primary);
+          margin-right: 10px;
+          min-width: 80px;
+        }
+
+        & span {
+          color: var(--text-secondary);
+        }
+      }
+    }
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .product-info {
+      & .product-title {
+        font-size: 2.2rem;
+      }
+
+      & .product-options {
+        & .quantity-group {
+          flex-wrap: nowrap;
+        }
+      }
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .product-info {
+      & .product-title {
+        font-size: 2.5rem;
+      }
+    }
+  }
+</style>
+
+<script>
+  // Funcionalidad de cantidad
+  document.addEventListener('DOMContentLoaded', function() {
+    const decreaseBtn = document.getElementById('decrease');
+    const increaseBtn = document.getElementById('increase');
+    const quantityDisplay = document.getElementById('quantity');
+    
+    let quantity = 1;
+    
+    decreaseBtn?.addEventListener('click', function() {
+      if (quantity > 1) {
+        quantity--;
+        if (quantityDisplay) quantityDisplay.textContent = quantity.toString();
+      }
+    });
+    
+    increaseBtn?.addEventListener('click', function() {
+      quantity++;
+      if (quantityDisplay) quantityDisplay.textContent = quantity.toString();
+    });
+  });
+</script>
