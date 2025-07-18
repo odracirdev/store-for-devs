@@ -74,7 +74,6 @@ const sanitizedDescription = sanitizeHtml(product.description, {
 ---
 
 <Main title={`${product.name} - Store for Devs`} description={product.description}>
-  <div class="product-page">
     <ProductBreadcrumb category={product.category} productName={product.name} />
 
     <div class="product-main">
@@ -106,17 +105,9 @@ const sanitizedDescription = sanitizeHtml(product.description, {
     />
 
     <RelatedProducts products={relatedProducts} />
-  </div>
 </Main>
 
 <style>
-  .product-page {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background: var(--bg-primary);
-  }
-
   .product-main {
     display: grid;
     grid-template-columns: 1fr;
