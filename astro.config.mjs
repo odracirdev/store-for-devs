@@ -1,6 +1,5 @@
 import { defineConfig } from 'astro/config'
-
-import icon from 'astro-icon'
+import UnoCSS from 'unocss/astro'
 
 const STANDARD_UNIT_SIZE = 16
 
@@ -24,5 +23,5 @@ export default defineConfig({
 		},
 	},
 
-	integrations: [icon()],
+	integrations: [UnoCSS()],
 })
