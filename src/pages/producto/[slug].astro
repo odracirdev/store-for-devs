@@ -2,6 +2,7 @@
 import Main from '../../layouts/Main.astro'
 import ProductCard from '../../components/ui/ProductCard.astro'
 import { wordpressService } from '../../services/wordpress'
+import sanitizeHtml from 'sanitize-html'
 
 // Generar rutas estáticas para todos los productos
 export async function getStaticPaths() {
@@ -32,6 +33,14 @@ const hasDiscount = product.onSale && product.salePrice
 const originalPrice = product.price
 const salePrice = hasDiscount ? product.salePrice : null
 const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice) / originalPrice) * 100) : null
+
+// Sanitizar descripción del producto
+const sanitizedDescription = sanitizeHtml(product.description, {
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(['h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'li', 'p', 'strong', 'em', 'code', 'b', 'span', 'i']),
+  allowedAttributes: {
+    '*': ['data-start', 'data-end'] // Permitir atributos personalizados
+  }
+});
 ---
 
 <Main title={`${product.name} - Store for Devs`} description={product.description}>
@@ -62,7 +71,7 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
         
         <!-- Galería de imágenes adicionales -->
         <div class="image-thumbnails">
-          {product.image.map((img, index) => (
+          {product.image.map((img: string, index: number) => (
             <img
               src={img}
               alt={product.imageAlt[index] || `${product.name} - Vista ${index + 1}`}
@@ -90,21 +99,18 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
           <div class="option-group">
             <label for="color">Color</label>
             <select id="color" class="option-select">
-              <option value="negro">Negro</option>
-              <option value="blanco">Blanco</option>
-              <option value="gris">Gris</option>
+              {product.attributes.find((attr: { name: string; options: string[] }) => attr.name.toLowerCase() === 'color')?.options.map((color: string) => (
+                <option value={color.toLowerCase()}>{color}</option>
+              ))}
             </select>
           </div>
 
           <div class="option-group">
             <label for="size">Talla</label>
             <select id="size" class="option-select">
-              <option value="xs">XS</option>
-              <option value="s">S</option>
-              <option value="m" selected>M</option>
-              <option value="l">L</option>
-              <option value="xl">XL</option>
-              <option value="xxl">XXL</option>
+              {product.attributes.find((attr: { name: string; options: string[] }) => attr.name.toLowerCase() === 'talla')?.options.map((size: string) => (
+                <option value={size.toLowerCase()}>{size}</option>
+              ))}
             </select>
           </div>
 
@@ -133,19 +139,44 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
         <div class="product-meta">
           <div class="meta-item">
             <strong>Etiquetas:</strong>
-            <span>Framework, Bebida, Platform, Vue</span>
+            <span>{product.tags.join(', ')}</span>
           </div>
           <div class="meta-item">
             <strong>Categoría:</strong>
             <span>{product.category}</span>
           </div>
-          <div class="meta-item">
-            <strong>Marca:</strong>
-            <span>Store for Devs</span>
-          </div>
         </div>
       </div>
     </div>
+
+    <!-- Detalles del producto -->
+    <section class="product-details">
+      <div class="description-content" set:html={sanitizedDescription}></div>
+
+      <div class="reviews-content">
+        <div class="no-reviews">
+          <h3>Valoraciones</h3>
+          <p>No hay reseñas todavía.</p>
+          <p>Sé el primero en valorar "{product.name}"</p>
+          
+          <div class="review-form">
+            <h4>Añadir una valoración</h4>
+            <div class="rating-input">
+              <label>Tu valoración *</label>
+              <div class="stars-input">
+                <span class="star" data-rating="1">☆</span>
+                <span class="star" data-rating="2">☆</span>
+                <span class="star" data-rating="3">☆</span>
+                <span class="star" data-rating="4">☆</span>
+                <span class="star" data-rating="5">☆</span>
+              </div>
+            </div>
+            <textarea placeholder="Tu reseña *" rows="4"></textarea>
+            <button type="submit" class="submit-review">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Productos Relacionados -->
     {relatedProducts.length > 0 && (
@@ -164,90 +195,6 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
         </div>
       </section>
     )}
-
-    <!-- Detalles del producto -->
-    <section class="product-details">
-      <div class="details-tabs">
-        <button class="tab-btn active" data-tab="description">Descripción</button>
-        <button class="tab-btn" data-tab="info">Información adicional</button>
-        <button class="tab-btn" data-tab="reviews">Valoraciones (0)</button>
-      </div>
-
-      <div class="tab-content">
-        <div class="tab-pane active" id="description">
-          <div class="description-content">
-            <p>{product.description}</p>
-            <p>Parte de la colección "Framework Rebelde", este poleron está diseñado para los que dominan el reactivo core con precision quirúrgica y una ejecución perfecta.</p>
-            <p>El clásico logo de Vue ha sido transformado en un <strong>símbolo clandestino</strong> lineas sólidas, angulares y robustas que forman una y amenazante, combinado con una colección oscura y rebelde pueden impactar perfectamente.</p>
-            <p>Aquí no hay salones, con líneas de combate. Porque si usas Vue, sabes que la elegancia no necesita explicaciones, pero si respetas el arte y la técnica que se esconde detrás de cada línea.</p>
-            
-            <h3>🔥 Detalles del producto:</h3>
-            <ul>
-              <li>🔸 Estampado con vinil laser de corte controlado nítido, cero degradado</li>
-              <li>🔸 Poleron unisex, cómodo y resistente como tu build</li>
-              <li>🔸 Edición especial de Framework Rebelde - no se reimprima</li>
-            </ul>
-
-            <h3>🎯 Para quién es:</h3>
-            <ul>
-              <li>Para los que saben que <strong>Git</strong> y <strong>GitHub</strong> no son trucos, sino herramientas de precision.</li>
-              <li>Para quienes dominan el hackeo, jota desde fuera pero tu ADN.</li>
-              <li>Para los que eligen Vue por su moda, sino por convicción.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="tab-pane" id="info">
-          <div class="info-content">
-            <h3>Información adicional</h3>
-            <table class="info-table">
-              <tr>
-                <td>Peso</td>
-                <td>0.5 kg</td>
-              </tr>
-              <tr>
-                <td>Dimensiones</td>
-                <td>30 × 20 × 5 cm</td>
-              </tr>
-              <tr>
-                <td>Material</td>
-                <td>100% Algodón orgánico</td>
-              </tr>
-              <tr>
-                <td>Cuidados</td>
-                <td>Lavar a máquina en agua fría</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-
-        <div class="tab-pane" id="reviews">
-          <div class="reviews-content">
-            <div class="no-reviews">
-              <h3>Valoraciones</h3>
-              <p>No hay reseñas todavía.</p>
-              <p>Sé el primero en valorar "{product.name}"</p>
-              
-              <div class="review-form">
-                <h4>Añadir una valoración</h4>
-                <div class="rating-input">
-                  <label>Tu valoración *</label>
-                  <div class="stars-input">
-                    <span class="star" data-rating="1">☆</span>
-                    <span class="star" data-rating="2">☆</span>
-                    <span class="star" data-rating="3">☆</span>
-                    <span class="star" data-rating="4">☆</span>
-                    <span class="star" data-rating="5">☆</span>
-                  </div>
-                </div>
-                <textarea placeholder="Tu reseña *" rows="4"></textarea>
-                <button type="submit" class="submit-review">Enviar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </div>
 </Main>
 
@@ -433,38 +380,36 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
           overflow: hidden;
 
           & .quantity-btn {
-            width: 35px;
-            height: 35px;
+            width: 42px;
+            height: 42px;
             border: none;
-            background: #f8f9fa;
-            color: var(--text-primary);
+            background: var(--primary-light);
+            color: var(--primary-dark);
             cursor: pointer;
             font-size: 16px;
             transition: all 0.3s ease;
 
             &:hover {
-              background: #e9ecef;
+              background: var(--secondary-light);
             }
           }
 
           & .quantity-display {
             width: 50px;
-            height: 35px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--bg-primary);
-            color: var(--text-primary);
-            font-weight: 500;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
+            color: var(--primary-light);
+            font-weight: 600;
           }
         }
 
         & .add-to-cart-btn {
           padding: 10px 20px;
           background: var(--primary);
-          color: var(--bg-primary);
+          color: var(--primary-dark);
           border: none;
           border-radius: 4px;
           cursor: pointer;
@@ -564,176 +509,113 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
 
   /* Detalles del Producto */
   .product-details {
-    & .details-tabs {
-      display: flex;
-      border-bottom: 1px solid #eee;
-      margin-bottom: 30px;
+    & .description-content {
+      line-height: 1.6;
+      color: var(--text-secondary);
 
-      & .tab-btn {
-        padding: 15px 20px;
-        border: none;
-        background: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        font-weight: 500;
-        border-bottom: 2px solid transparent;
-        transition: all 0.3s ease;
+      & p {
+        margin-bottom: 15px;
+      }
 
-        &:hover {
-          color: var(--text-primary);
-        }
+      & h3 {
+        color: var(--text-primary);
+        margin: 25px 0 15px 0;
+        font-size: 1.2rem;
+      }
 
-        &.active {
-          color: var(--primary);
-          border-bottom-color: var(--primary);
+      & ul {
+        margin-bottom: 20px;
+        padding-left: 20px;
+
+        & li {
+          margin-bottom: 8px;
+          color: var(--text-secondary);
         }
       }
     }
 
-    & .tab-content {
-      & .tab-pane {
-        display: none;
+    & .reviews-content {
+      & .no-reviews {
+        text-align: center;
+        padding: 40px 20px;
 
-        &.active {
-          display: block;
-        }
-      }
-
-      & .description-content {
-        line-height: 1.6;
-        color: var(--text-secondary);
-
-        & p {
+        & h3 {
+          color: var(--text-primary);
           margin-bottom: 15px;
         }
 
-        & h3 {
-          color: var(--text-primary);
-          margin: 25px 0 15px 0;
-          font-size: 1.2rem;
+        & p {
+          color: var(--text-secondary);
+          margin-bottom: 10px;
         }
 
-        & ul {
-          margin-bottom: 20px;
-          padding-left: 20px;
+        & .review-form {
+          text-align: left;
+          max-width: 500px;
+          margin: 30px auto 0;
 
-          & li {
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-          }
-        }
-      }
-
-      & .info-content {
-        & h3 {
-          color: var(--text-primary);
-          margin-bottom: 20px;
-        }
-
-        & .info-table {
-          width: 100%;
-          border-collapse: collapse;
-
-          & tr {
-            border-bottom: 1px solid #eee;
-
-            & td {
-              padding: 10px 0;
-              color: var(--text-secondary);
-
-              &:first-child {
-                font-weight: 500;
-                color: var(--text-primary);
-                width: 150px;
-              }
-            }
-          }
-        }
-      }
-
-      & .reviews-content {
-        & .no-reviews {
-          text-align: center;
-          padding: 40px 20px;
-
-          & h3 {
+          & h4 {
             color: var(--text-primary);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
           }
 
-          & p {
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-          }
+          & .rating-input {
+            margin-bottom: 20px;
 
-          & .review-form {
-            text-align: left;
-            max-width: 500px;
-            margin: 30px auto 0;
-
-            & h4 {
+            & label {
+              display: block;
+              margin-bottom: 10px;
+              font-weight: 500;
               color: var(--text-primary);
-              margin-bottom: 20px;
             }
 
-            & .rating-input {
-              margin-bottom: 20px;
+            & .stars-input {
+              display: flex;
+              gap: 5px;
 
-              & label {
-                display: block;
-                margin-bottom: 10px;
-                font-weight: 500;
-                color: var(--text-primary);
-              }
+              & .star {
+                font-size: 24px;
+                color: #ddd;
+                cursor: pointer;
+                transition: color 0.3s ease;
 
-              & .stars-input {
-                display: flex;
-                gap: 5px;
-
-                & .star {
-                  font-size: 24px;
-                  color: #ddd;
-                  cursor: pointer;
-                  transition: color 0.3s ease;
-
-                  &:hover,
-                  &.active {
-                    color: var(--primary);
-                  }
+                &:hover,
+                &.active {
+                  color: var(--primary);
                 }
               }
             }
+          }
 
-            & textarea {
-              width: 100%;
-              padding: 10px;
-              border: 1px solid #ddd;
-              border-radius: 4px;
-              margin-bottom: 20px;
-              resize: vertical;
-              font-family: inherit;
-              color: var(--text-primary);
-              background: var(--bg-primary);
+          & textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            resize: vertical;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: var(--bg-primary);
 
-              &:focus {
-                outline: none;
-                border-color: var(--primary);
-              }
+            &:focus {
+              outline: none;
+              border-color: var(--primary);
             }
+          }
 
-            & .submit-review {
-              padding: 10px 20px;
-              background: var(--primary);
-              color: var(--bg-primary);
-              border: none;
-              border-radius: 4px;
-              cursor: pointer;
-              font-weight: 600;
-              transition: all 0.3s ease;
+          & .submit-review {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
 
-              &:hover {
-                background: var(--primary-dark);
-              }
+            &:hover {
+              background: var(--primary-dark);
             }
           }
         }
@@ -826,29 +708,6 @@ const discountPercentage = hasDiscount ? Math.round(((originalPrice - salePrice)
     increaseBtn?.addEventListener('click', function() {
       quantity++;
       if (quantityDisplay) quantityDisplay.textContent = quantity.toString();
-    });
-    
-    // Funcionalidad de pestañas
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabPanes = document.querySelectorAll('.tab-pane');
-    
-    tabButtons.forEach(btn => {
-      btn.addEventListener('click', function(this: HTMLElement) {
-        const tabId = this.dataset.tab;
-        
-        if (!tabId) return;
-        
-        // Remover clase active de todas las pestañas y paneles
-        tabButtons.forEach(b => b.classList.remove('active'));
-        tabPanes.forEach(p => p.classList.remove('active'));
-        
-        // Agregar clase active a la pestaña clickeada y su panel
-        this.classList.add('active');
-        const targetPane = document.getElementById(tabId);
-        if (targetPane) {
-          targetPane.classList.add('active');
-        }
-      });
     });
     
     // Funcionalidad de galería

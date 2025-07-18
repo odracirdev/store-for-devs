@@ -113,6 +113,7 @@ class WordPressService {
 			averageRating: wpProduct.average_rating,
 			ratingCount: wpProduct.rating_count,
 			permalink: wpProduct.permalink,
+			tags: wpProduct.tags.map((tag) => tag.name),
 		}
 	}
 

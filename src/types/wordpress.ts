@@ -91,6 +91,7 @@ export interface Product {
 	image: string[]
 	imageAlt: string[]
 	category: string
+	tags: string[]
 	description: string
 	shortDescription: string
 	featured: boolean
