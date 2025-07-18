@@ -1,17 +1,43 @@
 ---
-import Button from '@components/ui/Button.astro';
-import ProductCard from '@components/ui/ProductCard.astro';
+import Button from '@components/ui/Button.astro'
+import ProductCard from '@components/ui/ProductCard.astro'
+import { wordpressService } from '../../services/wordpress'
+
+// Obtener productos nuevos de WordPress
+let newProducts: any[] = []
+try {
+	newProducts = await wordpressService.getNewProducts(8)
+} catch (error) {
+	console.error('Error loading new products:', error)
+	// Productos fallback en caso de error
+	newProducts = []
+}
 ---
 
 <section class="products-wrapper">
   <h2><span>Últimos Push</span></h2>
   <div class="products-container">
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+    {
+      newProducts.length > 0 ? (
+        newProducts.map(product => (
+          <ProductCard
+            img={product.image}
+            category={product.category}
+            title={product.name}
+            price={product.onSale && product.salePrice ? `$${product.salePrice}` : `$${product.price}`}
+          />
+        ))
+      ) : (
+        <>
+          <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+          <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+          <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+          <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+        </>
+      )
+    }
   </div>
-  <Button content="Botoncito" href="#" />
+  <Button content="Ver todos los productos" href="/productos" />
 </section>
 
 <style>

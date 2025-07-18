@@ -1,16 +1,33 @@
+---
+import type { Category } from '../../types/wordpress'
+
+interface Props {
+	categories?: Category[]
+}
+
+const { categories = [] } = Astro.props
+
+// Categorías fallback si no hay datos
+const fallbackCategories = [
+	{ name: 'Poleras', image: 'https://placehold.co/600x400?text=Poleras' },
+	{ name: 'Polerones', image: 'https://placehold.co/600x400?text=Polerones' },
+	{ name: 'Hoodies', image: 'https://placehold.co/600x400?text=Hoodies' },
+	{ name: 'Accesorios', image: 'https://placehold.co/600x400?text=Accesorios' },
+]
+
+// Usar categorías de WordPress o fallback
+const displayCategories = categories.length > 0 ? categories.slice(0, 4) : fallbackCategories
+---
+
 <div class="categories">
-  <div class="category-item category-1">
-    <img src="https://placehold.co/600x400?text=Poleras" />
-  </div>
-  <div class="category-item category-2">
-    <img src="https://placehold.co/600x400?text=Polerones" />
-  </div>
-  <div class="category-item category-3">
-    <img src="https://placehold.co/600x400?text=Polerones" />
-  </div>
-  <div class="category-item category-4">
-    <img src="https://placehold.co/600x400?text=Poleras" />
-  </div>
+  {
+    displayCategories.map((category, index) => (
+      <div class={`category-item category-${index + 1}`}>
+        <img src={category.image || `https://placehold.co/600x400?text=${encodeURIComponent(category.name)}`} alt={category.name} />
+        <span class="category-name">{category.name}</span>
+      </div>
+    ))
+  }
 </div>
 
 <style>
@@ -29,12 +46,28 @@
       align-items: start;
       font-size: 2rem;
       border-radius: 20px;
+      position: relative;
+      overflow: hidden;
 
       & img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         border-radius: 20px;
+      }
+
+      & .category-name {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        color: white;
+        font-weight: bold;
+        font-size: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
       }
     }
 

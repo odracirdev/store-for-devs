@@ -1,17 +1,40 @@
 ---
-import Button from '@components/ui/Button.astro';
-import ProductCard from '@components/ui/ProductCard.astro';
+import Button from '@components/ui/Button.astro'
+import ProductCard from '@components/ui/ProductCard.astro'
+import { wordpressService } from '../../services/wordpress'
+
+// Obtener productos más vendidos de WordPress
+let bestSellingProducts: any[] = []
+try {
+	bestSellingProducts = await wordpressService.getBestSellingProducts(8)
+} catch (error) {
+	console.error('Error loading best selling products:', error)
+	// Productos fallback en caso de error
+	bestSellingProducts = []
+}
 ---
 
 <section class="products-wrapper">
   <h2><span>Items más vendidos</span></h2>
   <div class="products-container">
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+    {bestSellingProducts.length > 0 ? (
+      bestSellingProducts.map((product) => (
+        <ProductCard 
+          img={product.image} 
+          category={product.category} 
+          title={product.name} 
+          price={product.onSale && product.salePrice ? `$${product.salePrice}` : `$${product.price}`}
+        />
+      ))
+    ) : (
+      // Productos fallback si no hay datos
+      <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+      <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+      <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+      <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+    )}
   </div>
-  <Button content="Botoncito" href="#" />
+  <Button content="Ver más vendidos" href="/mas-vendidos" />
 </section>
 
 <style>

@@ -1,10 +1,22 @@
 ---
-import BentoCategories from '@components/ui/BentoCategories.astro';
+import BentoCategories from '@components/ui/BentoCategories.astro'
+import { wordpressService } from '../../services/wordpress'
+import type { Category } from 'src/types/wordpress'
+
+// Obtener categorías de WordPress
+let categories: Category[] | undefined = []
+try {
+	categories = await wordpressService.getCategories({ per_page: 4 })
+} catch (error) {
+	console.error('Error loading categories:', error)
+	// Categorías fallback en caso de error
+	categories = []
+}
 ---
 
 <section class="categories-wrapper">
   <h2><span>Nuestras Librerías</span></h2>
-  <BentoCategories />
+  <BentoCategories categories={categories} />
 </section>
 
 <style>

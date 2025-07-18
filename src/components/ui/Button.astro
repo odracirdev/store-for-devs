@@ -1,13 +1,13 @@
 ---
 type Props = {
-  href: string;
-  target?: string;
-  rel?: string;
-  content: string;
-  color?: 'default' | 'light' | 'dark';
-};
+	href: string
+	target?: string
+	rel?: string
+	content: string
+	color?: 'default' | 'light' | 'dark'
+}
 
-const { href, target = '_self', rel = 'nofollow', content, color = 'default' } = Astro.props;
+const { href, target = '_self', rel = 'nofollow', content, color = 'default' } = Astro.props
 ---
 
 <a href={href} class={`button button-${color}`} target={target} rel={rel}>{content}</a>
