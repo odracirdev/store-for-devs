@@ -1,0 +1,428 @@
+---
+import Main from './Main.astro'
+import ProductCard from '../components/ui/ProductCard.astro'
+import { wordpressService } from '../services/wordpress'
+
+export interface Props {
+	categoryName: string
+	categoryDescription?: string
+	currentPage?: number
+	productsPerPage?: number
+}
+
+const {
+	categoryName,
+	categoryDescription = `Descubre nuestra colección de ${categoryName.toLowerCase()} para desarrolladores. Los mejores diseños de programación.`,
+	currentPage = Number(Astro.url.searchParams.get('page') || '1'),
+	productsPerPage = 12,
+} = Astro.props
+
+// Obtener productos de la categoría con paginación
+let products: any[] = []
+let totalPages = 1
+let totalItems = 0
+let allProductsInCategory: any[] = []
+
+try {
+	console.log(`🏷️ Cargando página ${currentPage} de la categoría "${categoryName}"...`)
+
+	// Obtener TODOS los productos primero
+	const allProducts = await wordpressService.getProducts({
+		per_page: 100, // Obtener todos los productos
+		status: 'publish',
+		orderby: 'date',
+		order: 'desc',
+	})
+
+	console.log(`📦 Total de productos obtenidos: ${allProducts.length}`)
+
+	// Filtrar productos por categoría en el cliente
+	allProductsInCategory = allProducts.filter((product) => {
+		const productCategory = product.category
+		const matches = productCategory === categoryName
+		if (matches) {
+			console.log(`✅ Producto encontrado: ${product.name} - Categoría: ${productCategory}`)
+		}
+		return matches
+	})
+
+	console.log(`🏷️ Productos de "${categoryName}" encontrados: ${allProductsInCategory.length}`)
+
+	// Calcular paginación manual
+	totalItems = allProductsInCategory.length
+	totalPages = Math.ceil(totalItems / productsPerPage)
+
+	// Obtener productos para la página actual
+	const startIndex = (currentPage - 1) * productsPerPage
+	const endIndex = startIndex + productsPerPage
+	products = allProductsInCategory.slice(startIndex, endIndex)
+
+	console.log(
+		`📄 Página ${currentPage}/${totalPages}: Mostrando productos ${startIndex + 1}-${Math.min(endIndex, totalItems)} de ${totalItems}`
+	)
+} catch (error) {
+	console.error(`❌ Error loading ${categoryName} products:`, error)
+	products = []
+}
+
+const title = `${categoryName}${currentPage > 1 ? ` - Página ${currentPage}` : ''} - Store for Devs`
+const slug = categoryName.toLowerCase().replace(/\s+/g, '-')
+---
+
+<Main title={title} description={categoryDescription}>
+	<section class="category-wrapper">
+		<div class="container">
+			<!-- Header de la categoría -->
+			<div class="category-header">
+				<h1><span>{categoryName}</span></h1>
+				<p class="category-description">
+					{categoryDescription}
+				</p>
+				
+				<!-- Breadcrumb -->
+				<nav class="breadcrumb">
+					<a href="/">Inicio</a>
+					<span class="separator">/</span>
+					<a href="/tienda">Tienda</a>
+					<span class="separator">/</span>
+					<span class="current">{categoryName}</span>
+				</nav>
+			</div>
+
+			<!-- Grid de productos -->
+			{products.length > 0 ? (
+				<div class="products-container">
+					{products.map((product) => {
+						// Obtener imagen del producto
+						const productImage = (product.image && product.image.length > 0) 
+							? product.image[0] 
+							: 'https://placehold.co/300'
+						
+						// Calcular precio para mostrar
+						const displayPrice = product.onSale && product.salePrice && product.salePrice !== '0'
+							? `$${product.salePrice}`
+							: `$${product.price || '0'}`
+						
+						const originalPrice = product.onSale && product.salePrice && product.salePrice !== '0'
+							? `$${product.price}`
+							: undefined
+
+						return (
+							<ProductCard
+								img={productImage}
+								category={product.category || 'Sin categoría'}
+								title={product.name || 'Producto'}
+								price={displayPrice}
+								originalPrice={originalPrice}
+								href={`/producto/${product.slug}`}
+							/>
+						)
+					})}
+				</div>
+			) : (
+				<div class="no-products">
+					<i class="i-carbon-shopping-bag text-6xl text-gray-400"></i>
+					<h3>No se encontraron {categoryName.toLowerCase()}</h3>
+					<p>Lo sentimos, no hay productos disponibles en esta categoría en este momento.</p>
+					<a href="/tienda" class="back-to-store">Ver todos los productos</a>
+				</div>
+			)}
+
+			<!-- Paginación -->
+			{totalPages > 1 && (
+				<nav class="pagination">
+					<div class="pagination-container">
+						<!-- Página anterior -->
+						{currentPage > 1 && (
+							<a href={currentPage === 2 ? `/categoria/${slug}` : `/categoria/${slug}?page=${currentPage - 1}`} class="pagination-btn prev">
+								<i class="i-carbon-chevron-left"></i>
+								Anterior
+							</a>
+						)}
+
+						<!-- Números de página -->
+						<div class="pagination-numbers">
+							{Array.from({ length: totalPages }, (_, i) => {
+								const page = i + 1
+								const isActive = page === currentPage
+								const href = page === 1 ? `/categoria/${slug}` : `/categoria/${slug}?page=${page}`
+								
+								return isActive ? (
+									<span class="pagination-number active">{page}</span>
+								) : (
+									<a href={href} class="pagination-number">{page}</a>
+								)
+							})}
+						</div>
+
+						<!-- Página siguiente -->
+						{currentPage < totalPages && (
+							<a href={`/categoria/${slug}?page=${currentPage + 1}`} class="pagination-btn next">
+								Siguiente
+								<i class="i-carbon-chevron-right"></i>
+							</a>
+						)}
+					</div>
+				</nav>
+			)}
+		</div>
+	</section>
+</Main>
+
+<style>
+	/* Contenedor principal */
+	.category-wrapper {
+		padding: 2rem 0;
+		min-height: 60vh;
+
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 1rem;
+		}
+	}
+
+	/* Header de la categoría */
+	.category-header {
+		text-align: center;
+		margin-bottom: 3rem;
+
+		h1 {
+			text-transform: uppercase;
+			position: relative;
+			width: 100%;
+			font-size: 2rem;
+			margin: 0 0 1rem 0;
+			padding: 30px 0;
+
+			span {
+				background-color: var(--primary-dark);
+				padding: 0 20px;
+			}
+
+			&::before {
+				content: '';
+				position: absolute;
+				height: 2px;
+				width: 100%;
+				background-color: var(--primary-light);
+				opacity: 0.3;
+				top: 50%;
+				left: 0;
+				z-index: -1;
+			}
+		}
+
+		.category-description {
+			color: var(--secondary-light);
+			font-size: 1.1rem;
+			margin-bottom: 1.5rem;
+		}
+	}
+
+	/* Breadcrumb */
+	.breadcrumb {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.9rem;
+		color: var(--secondary-light);
+
+		a {
+			color: var(--accent-color);
+			text-decoration: none;
+			transition: color 0.3s ease;
+
+			&:hover {
+				color: var(--primary-light);
+			}
+		}
+
+		.separator {
+			color: var(--secondary-light);
+		}
+
+		.current {
+			color: var(--primary);
+			font-weight: 700;
+		}
+	}
+
+	/* Grid de productos */
+	.products-container {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 15px;
+		margin-bottom: 3rem;
+	}
+
+	/* Sin productos */
+	.no-products {
+		text-align: center;
+		padding: 4rem 0;
+		color: var(--primary-light);
+
+		i {
+			color: var(--secondary-light);
+			margin-bottom: 1rem;
+		}
+
+		h3 {
+			margin: 1rem 0;
+			font-size: 1.5rem;
+			color: var(--primary-light);
+		}
+
+		p {
+			color: var(--secondary-light);
+			margin-bottom: 2rem;
+		}
+
+		.back-to-store {
+			display: inline-block;
+			padding: 0.75rem 1.5rem;
+			background: var(--accent-color);
+			color: var(--primary-dark);
+			text-decoration: none;
+			border-radius: 6px;
+			font-weight: 600;
+			transition: all 0.3s ease;
+
+			&:hover {
+				background: var(--primary-light);
+				transform: translateY(-2px);
+			}
+		}
+	}
+
+	/* Paginación */
+	.pagination {
+		display: flex;
+		justify-content: center;
+		margin: 3rem 0;
+
+		.pagination-container {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.pagination-btn {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 0.75rem 1rem;
+			background: var(--secondary-dark);
+			color: var(--primary-light);
+			text-decoration: none;
+			border-radius: 6px;
+			font-size: 0.9rem;
+			transition: all 0.3s ease;
+
+			&:hover {
+				background: var(--primary);
+				color: var(--primary-dark);
+			}
+
+			i {
+				font-size: 1rem;
+			}
+		}
+
+		.pagination-numbers {
+			display: flex;
+			align-items: center;
+			gap: 0.25rem;
+			margin: 0 0.5rem;
+		}
+
+		.pagination-number {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 40px;
+			height: 40px;
+			background: var(--secondary-dark);
+			color: var(--primary-light);
+			text-decoration: none;
+			border-radius: 6px;
+			font-size: 0.9rem;
+			transition: all 0.3s ease;
+
+			&:hover {
+				background: var(--primary);
+				color: var(--primary-dark);
+			}
+
+			&.active {
+				background: var(--primary);
+				color: var(--primary-dark);
+				font-weight: 600;
+			}
+		}
+
+		.pagination-ellipsis {
+			color: var(--secondary-light);
+			padding: 0 0.5rem;
+		}
+	}
+
+	/* Responsive */
+	@media (max-width: 768px) {
+		.category-header {
+			.category-stats {
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+
+			.breadcrumb {
+				flex-wrap: wrap;
+			}
+		}
+
+		.pagination {
+			.pagination-container {
+				flex-direction: column;
+				gap: 1rem;
+			}
+
+			.pagination-numbers {
+				order: -1;
+			}
+		}
+	}
+
+	/* Tablet */
+	@media (width >= 768px) {
+		.category-header h1 {
+			font-size: 2.5rem;
+		}
+
+		.products-container {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 20px;
+		}
+	}
+
+	/* Desktop */
+	@media (width >= 1024px) {
+		.category-header h1 {
+			font-size: 3rem;
+		}
+
+		.products-container {
+			grid-template-columns: repeat(4, 1fr);
+			gap: 20px;
+		}
+	}
+
+	/* Large Desktop */
+	@media (width >= 1200px) {
+		.products-container {
+			gap: 30px;
+		}
+	}
+</style>

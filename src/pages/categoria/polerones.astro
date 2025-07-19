@@ -1,0 +1,14 @@
+---
+export const prerender = false
+
+import CategoryLayout from '../../layouts/CategoryLayout.astro'
+
+const categoryName = 'Polerones'
+const categoryDescription =
+	'Explora nuestra colección de polerones con diseños únicos para programadores. Comodidad y estilo para developers.'
+---
+
+<CategoryLayout 
+	categoryName={categoryName}
+	categoryDescription={categoryDescription}
+/>
