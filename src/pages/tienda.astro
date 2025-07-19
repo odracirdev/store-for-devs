@@ -1,4 +1,6 @@
 ---
+export const prerender = false
+
 import Main from '../layouts/Main.astro'
 import ProductCard from '../components/ui/ProductCard.astro'
 import { wordpressService } from '../services/wordpress'
@@ -14,28 +16,30 @@ let totalItems = 0
 
 try {
 	console.log(`🛒 Cargando página ${currentPage} de la tienda...`)
-	
+
 	const result = await wordpressService.getProductsWithPagination({
 		per_page: productsPerPage,
 		page: currentPage,
 		status: 'publish',
 		orderby: 'date',
-		order: 'desc'
+		order: 'desc',
 	})
-	
+
 	products = result.products
 	totalPages = result.totalPages
 	totalItems = result.totalItems
-	
-	console.log(`✅ Productos cargados: ${products.length} de ${totalItems} total (${totalPages} páginas)`)
-	
+
+	console.log(
+		`✅ Productos cargados: ${products.length} de ${totalItems} total (${totalPages} páginas)`
+	)
 } catch (error) {
 	console.error('❌ Error loading products:', error)
 	products = []
 }
 
 const title = `Tienda${currentPage > 1 ? ` - Página ${currentPage}` : ''} - Store for Devs`
-const description = 'Descubre todos nuestros productos para desarrolladores. Hoodies, camisetas y más con los mejores diseños de programación.'
+const description =
+	'Descubre todos nuestros productos para desarrolladores. Hoodies, camisetas y más con los mejores diseños de programación.'
 ---
 
 <Main title={title} description={description}>
