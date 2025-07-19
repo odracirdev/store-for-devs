@@ -1,6 +1,9 @@
 ---
-import { Image } from 'astro:assets';
-import logo from '@images/assets/logo.webp';
+import { Image } from 'astro:assets'
+import logo from '@images/assets/logo.webp'
+
+// Obtener la ruta actual para marcar enlaces activos
+const currentPath = Astro.url.pathname
 ---
 
 <div class="navbar-section">
@@ -10,15 +13,40 @@ import logo from '@images/assets/logo.webp';
         <Image src={logo} alt="Store for Devs logo" width={90} />
       </a>
     </div>
-    <ul class="navbar">
-      <li><a href="#">Poleras</a></li>
-      <li><a href="#">Polerones</a></li>
-    </ul>
-    <div class="account-items-wrapper">
-      <ul class="account-items">
-        <li><a href="#">Login</a></li>
-        <li><a href="#">Carrito</a></li>
+    
+    <!-- Menú hamburguesa para mobile/tablet -->
+    <button class="hamburger-menu" id="hamburger-menu" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <!-- Menú principal -->
+    <div class="navbar-menu" id="navbar-menu">
+      <ul class="navbar">
+        <li>
+          <a 
+            href="/categoria/poleras" 
+            class={currentPath.startsWith('/categoria/poleras') ? 'active' : ''}
+          >
+            Poleras
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/categoria/polerones" 
+            class={currentPath.startsWith('/categoria/polerones') ? 'active' : ''}
+          >
+            Polerones
+          </a>
+        </li>
       </ul>
+      <div class="account-items-wrapper">
+        <ul class="account-items">
+          <li><a href="#">Login</a></li>
+          <li><a href="#">Carrito</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
 </div>
@@ -28,16 +56,18 @@ import logo from '@images/assets/logo.webp';
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
+    padding: 15px 20px;
     max-width: 1080px;
     margin: 0 auto;
+    flex-wrap: wrap;
+    position: relative;
 
     & ul {
       list-style: none;
       padding: 0;
-
+      margin: 0;
       display: flex;
-      gap: 24px;
+      gap: 16px;
     }
 
     & a {
@@ -47,20 +77,255 @@ import logo from '@images/assets/logo.webp';
     }
 
     & .logo {
-      margin-right: 40px;
-    }
-
-    & .navbar {
-      flex: 1;
-
-      & a {
-        font-size: 20px;
-        font-weight: 700;
+      margin-right: 20px;
+      z-index: 1001;
+      
+      & img {
+        height: auto;
+        max-width: 70px;
       }
     }
 
-    & .account-items {
-      gap: 12px;
+    /* Botón hamburguesa */
+    & .hamburger-menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 1001;
+      
+      & span {
+        width: 25px;
+        height: 3px;
+        background-color: var(--primary-light);
+        margin: 3px 0;
+        transition: 0.3s;
+        transform-origin: center;
+      }
+
+      &.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+
+      &.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      &.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+      }
+    }
+
+    /* Menú principal */
+    & .navbar-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(46, 46, 46, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 0 0 15px 15px;
+      padding: 20px;
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+
+      &.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+
+      & .navbar {
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 20px;
+
+        & a {
+          font-size: 18px;
+          font-weight: 700;
+          padding: 10px 0;
+          transition: all 0.3s ease;
+          position: relative;
+
+          &:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+          }
+
+          &.active {
+            color: var(--primary);
+            font-weight: 800;
+          }
+        }
+      }
+
+      & .account-items-wrapper {
+        & .account-items {
+          flex-direction: column;
+          gap: 15px;
+
+          & a {
+            font-size: 16px;
+            padding: 10px 0;
+            transition: all 0.3s ease;
+
+            &:hover {
+              color: var(--secondary);
+              transform: translateX(5px);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .navbar-wrapper {
+      padding: 20px 40px;
+      
+      & .logo {
+        margin-right: 40px;
+        
+        & img {
+          max-width: 80px;
+        }
+      }
+      
+      & .hamburger-menu {
+        width: 35px;
+        height: 35px;
+        
+        & span {
+          width: 28px;
+          height: 3px;
+        }
+      }
+      
+      & .navbar-menu {
+        padding: 30px;
+        
+        & .navbar a {
+          font-size: 20px;
+        }
+        
+        & .account-items a {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .navbar-wrapper {
+      flex-wrap: nowrap;
+      
+      & .logo {
+        margin-right: 40px;
+        
+        & img {
+          max-width: 90px;
+        }
+      }
+      
+      /* Ocultar hamburguesa en desktop */
+      & .hamburger-menu {
+        display: none;
+      }
+      
+      /* Mostrar menú horizontal en desktop */
+      & .navbar-menu {
+        position: static;
+        background: none;
+        backdrop-filter: none;
+        border-radius: 0;
+        padding: 0;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        display: flex;
+        align-items: center;
+        flex: 1;
+        
+        & .navbar {
+          flex-direction: row;
+          flex: 1;
+          margin-bottom: 0;
+          gap: 24px;
+
+          & a {
+            font-size: 20px;
+            padding: 8px 12px;
+            border-bottom: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+
+            &:hover {
+              color: var(--primary);
+            }
+
+            &.active {
+              color: var(--primary);
+              font-weight: 800;
+            }
+          }
+        }
+        
+        & .account-items-wrapper {
+          & .account-items {
+            flex-direction: row;
+            gap: 24px;
+
+            & a {
+              font-size: 16px;
+              padding: 0;
+            }
+          }
+        }
+      }
     }
   }
 </style>
+
+<script>
+  // Funcionalidad del menú hamburguesa
+  document.addEventListener('DOMContentLoaded', function() {
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const navbarMenu = document.getElementById('navbar-menu');
+    
+    if (hamburgerMenu && navbarMenu) {
+      hamburgerMenu.addEventListener('click', function() {
+        hamburgerMenu.classList.toggle('active');
+        navbarMenu.classList.toggle('active');
+      });
+      
+      // Cerrar menú al hacer clic en un enlace
+      const menuLinks = navbarMenu.querySelectorAll('a');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          hamburgerMenu.classList.remove('active');
+          navbarMenu.classList.remove('active');
+        });
+      });
+      
+      // Cerrar menú al hacer clic fuera
+      document.addEventListener('click', function(event) {
+        const target = event.target as Element;
+        if (!hamburgerMenu.contains(target) && !navbarMenu.contains(target)) {
+          hamburgerMenu.classList.remove('active');
+          navbarMenu.classList.remove('active');
+        }
+      });
+    }
+  });
+</script>

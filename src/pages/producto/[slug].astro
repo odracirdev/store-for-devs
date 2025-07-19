@@ -1,0 +1,151 @@
+---
+export const prerender = false
+
+import Main from '@layouts/Main.astro'
+import ProductBreadcrumb from '@ui/product/ProductBreadcrumb.astro'
+import ProductGallery from '@ui/product/ProductGallery.astro'
+import ProductInfo from '@ui/product/ProductInfo.astro'
+import ProductDetails from '@ui/product/ProductDetails.astro'
+import ProductReviews from '@ui/product/ProductReviews.astro'
+import RelatedProducts from '@ui/product/RelatedProducts.astro'
+import { wordpressService } from '@services/wordpress'
+import sanitizeHtml from 'sanitize-html'
+
+// Obtener el slug de la URL
+const { slug } = Astro.params
+
+// Obtener el producto por slug
+let product: any = null
+let allProducts: any[] = []
+
+try {
+	console.log(`🔍 Buscando producto con slug: ${slug}`)
+
+	// Obtener todos los productos para buscar el que coincida con el slug
+	allProducts = await wordpressService.getProducts({
+		per_page: 100, // Obtener todos los productos
+		status: 'publish',
+	})
+
+	// Buscar el producto por slug
+	product = allProducts.find((p: any) => p.slug === slug)
+
+	if (!product) {
+		console.error(`❌ Producto con slug "${slug}" no encontrado`)
+		return Astro.redirect('/404')
+	}
+
+	console.log(`✅ Producto encontrado: ${product.name} (ID: ${product.id})`)
+} catch (error) {
+	console.error('❌ Error loading product:', error)
+	return Astro.redirect('/404')
+}
+
+// Obtener reseñas del producto
+let productReviews: any[] = []
+try {
+	productReviews = await wordpressService.getProductReviews(product.id)
+} catch (error) {
+	console.error('Error loading product reviews:', error)
+}
+
+// Obtener productos relacionados de la misma categoría
+const relatedProducts = allProducts
+	.filter((p: any) => p.category === product.category && p.id !== product.id)
+	.slice(0, 4)
+
+// Calcular precio con descuento si aplica
+const hasDiscount = product.onSale && product.salePrice
+const originalPrice = product.price
+const salePrice = hasDiscount ? product.salePrice : null
+const discountPercentage = hasDiscount
+	? Math.round(((originalPrice - salePrice) / originalPrice) * 100)
+	: null
+
+// Sanitizar descripción del producto
+const sanitizedDescription = sanitizeHtml(product.description, {
+	allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+		'h2',
+		'h3',
+		'h4',
+		'h5',
+		'h6',
+		'ol',
+		'ul',
+		'li',
+		'p',
+		'strong',
+		'em',
+		'code',
+		'b',
+		'span',
+		'i',
+	]),
+	allowedAttributes: {
+		'*': ['data-start', 'data-end'], // Permitir atributos personalizados
+	},
+})
+---
+
+<Main title={`${product.name} - Store for Devs`} description={product.description}>
+    <ProductBreadcrumb category={product.category} productName={product.name} />
+
+    <div class="product-main">
+      <ProductGallery 
+        images={product.image} 
+        imageAlts={product.imageAlt} 
+        productName={product.name}
+        hasDiscount={hasDiscount}
+        discountPercentage={discountPercentage || undefined}
+      />
+      
+      <ProductInfo 
+        name={product.name}
+        price={originalPrice}
+        salePrice={salePrice}
+        hasDiscount={hasDiscount}
+        attributes={product.attributes}
+        tags={product.tags}
+        category={product.category}
+      />
+    </div>
+
+    <ProductDetails sanitizedDescription={sanitizedDescription} />
+
+    <ProductReviews 
+      reviews={productReviews} 
+      productName={product.name}
+      reviewsAllowed={product.reviewsAllowed}
+    />
+
+    <RelatedProducts products={relatedProducts} />
+</Main>
+
+<style>
+  .product-main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .product-page {
+      padding: 40px;
+    }
+
+    .product-main {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .product-page {
+      padding: 60px;
+    }
+  }
+</style>
+
+

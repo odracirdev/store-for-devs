@@ -1,13 +1,13 @@
 ---
-import '@fontsource-variable/work-sans';
-import '@fontsource-variable/montserrat';
+import '@fontsource-variable/work-sans'
+import '@fontsource-variable/montserrat'
 
 interface Props {
-  title: string;
-  description: string;
+	title: string
+	description: string
 }
 
-const { title, description } = Astro.props;
+const { title, description } = Astro.props
 ---
 
 <!doctype html>
@@ -15,7 +15,7 @@ const { title, description } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>

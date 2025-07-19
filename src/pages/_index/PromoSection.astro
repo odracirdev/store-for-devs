@@ -1,19 +1,35 @@
 ---
-import Promo from '@components/ui/Promo.astro';
+import Promo from '@components/ui/Promo.astro'
 ---
 
 <section class="promo-wrapper">
-  <Promo icon="shipping" promo="Envío gratis por compras sobre $99,990" />
-  <Promo icon="release" promo="Todos los meses un nuevo release" />
-  <Promo icon="discount" promo="10% de descuento al pagar con transferencia" />
+  <Promo icon="i-tabler-free-rights" promo="Envío gratis por compras sobre $99,990" />
+  <Promo icon="i-tabler-rocket" promo="Todos los meses un nuevo release" />
+  <Promo icon="i-tabler-rosette-discount" promo="10% de descuento al pagar con transferencia" />
 </section>
 
 <style>
   .promo-wrapper {
     display: flex;
-    gap: 20px;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 15px;
+    margin: 30px 0;
+  }
 
-    margin: 60px;
+  /* Tablet */
+  @media (width >= 768px) {
+    .promo-wrapper {
+      flex-direction: row;
+      gap: 20px;
+      justify-content: space-between;
+      margin: 40px 0;
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .promo-wrapper {
+      margin: 60px 0;
+    }
   }
 </style>

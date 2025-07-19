@@ -1,0 +1,14 @@
+---
+export const prerender = false
+
+import CategoryLayout from '@layouts/CategoryLayout.astro'
+
+const categoryName = 'Poleras'
+const categoryDescription =
+	'Descubre nuestra colección de poleras con los mejores diseños de programación. Camisetas de alta calidad para desarrolladores.'
+---
+
+<CategoryLayout 
+	categoryName={categoryName}
+	categoryDescription={categoryDescription}
+/>

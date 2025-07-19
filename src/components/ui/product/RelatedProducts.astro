@@ -1,0 +1,75 @@
+---
+import ProductCard from '@ui/ProductCard.astro'
+
+interface Product {
+	id: number
+	name: string
+	slug: string
+	image: string[]
+	category: string
+	price: string
+	salePrice?: string
+	onSale: boolean
+}
+
+interface Props {
+	products: Product[]
+}
+
+const { products } = Astro.props
+---
+
+{products.length > 0 && (
+  <section class="related-products">
+    <h2>Productos relacionados</h2>
+    <div class="products-grid">
+      {products.map(product => (
+        <ProductCard
+          img={product.image[0] || 'https://placehold.co/300'}
+          category={product.category}
+          title={product.name}
+          price={product.onSale && product.salePrice ? `$${product.salePrice}` : `$${product.price}`}
+          href={`/producto/${product.slug}`}
+        />
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .related-products {
+    margin-bottom: 60px;
+
+    & h2 {
+      margin-bottom: 30px;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+    }
+
+    & .products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .related-products {
+      & .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .related-products {
+      & .products-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  }
+</style>

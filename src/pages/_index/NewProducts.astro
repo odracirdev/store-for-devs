@@ -1,17 +1,44 @@
 ---
-import Button from '@components/ui/Button.astro';
-import ProductCard from '@components/ui/ProductCard.astro';
+import Button from '@ui/Button.astro'
+import ProductCard from '@ui/ProductCard.astro'
+import { wordpressService } from '@services/wordpress'
+
+// Obtener productos nuevos de WordPress
+let newProducts: any[] = []
+try {
+	newProducts = await wordpressService.getNewProducts(8)
+} catch (error) {
+	console.error('Error loading new products:', error)
+	// Productos fallback en caso de error
+	newProducts = []
+}
 ---
 
 <section class="products-wrapper">
   <h2><span>Últimos Push</span></h2>
   <div class="products-container">
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
-    <ProductCard img="https://placehold.co/300" category="Categoría" title="Nombre del producto" price="$9990" />
+    {
+      newProducts.length > 0 ? (
+        newProducts.map(product => (
+          <ProductCard
+            img={product.image[0] || 'https://placehold.co/300'}
+            category={product.category}
+            title={product.name}
+            price={product.onSale && product.salePrice ? `$${product.salePrice}` : `$${product.price}`}
+            href={`/producto/${product.slug}`}
+          />
+        ))
+      ) : (
+        <>
+          <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+          <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+          <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+          <ProductCard img="https://placehold.co/300" category="Categoría" title="Producto no disponible" price="$0" />
+        </>
+      )
+    }
   </div>
-  <Button content="Botoncito" href="#" />
+  <Button content="Ver todos los productos" href="/tienda" />
 </section>
 
 <style>
@@ -23,13 +50,14 @@ import ProductCard from '@components/ui/ProductCard.astro';
     & h2 {
       text-transform: uppercase;
       text-align: center;
-      padding: 40px 0;
+      padding: 30px 0;
       position: relative;
       width: 100%;
+      font-size: 24px;
 
       & span {
         background-color: var(--primary-dark);
-        padding: 0 20px;
+        padding: 0 15px;
       }
 
       &::before {
@@ -44,10 +72,59 @@ import ProductCard from '@components/ui/ProductCard.astro';
         z-index: -1;
       }
     }
+    
     & .products-container {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 40px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+      width: 100%;
+    }
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .products-wrapper {
+      & h2 {
+        padding: 35px 0;
+        font-size: 28px;
+        
+        & span {
+          padding: 0 20px;
+        }
+      }
+      
+      & .products-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 35px;
+      }
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .products-wrapper {
+      & h2 {
+        padding: 40px 0;
+        font-size: 32px;
+      }
+      
+      & .products-container {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+    }
+  }
+
+  /* Large Desktop */
+  @media (width >= 1200px) {
+    .products-wrapper {
+      & .products-container {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+      }
     }
   }
 </style>

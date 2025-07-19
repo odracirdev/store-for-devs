@@ -1,10 +1,22 @@
 ---
-import BentoCategories from '@components/ui/BentoCategories.astro';
+import BentoCategories from '@ui/BentoCategories.astro'
+import { wordpressService } from '@services/wordpress'
+import type { Category } from 'src/types/wordpress'
+
+// Obtener categorías de WordPress
+let categories: Category[] | undefined = []
+try {
+	categories = await wordpressService.getCategories({ per_page: 4 })
+} catch (error) {
+	console.error('Error loading categories:', error)
+	// Categorías fallback en caso de error
+	categories = []
+}
 ---
 
 <section class="categories-wrapper">
   <h2><span>Nuestras Librerías</span></h2>
-  <BentoCategories />
+  <BentoCategories categories={categories} />
 </section>
 
 <style>
@@ -16,13 +28,14 @@ import BentoCategories from '@components/ui/BentoCategories.astro';
     & h2 {
       text-transform: uppercase;
       text-align: center;
-      padding: 40px 0;
+      padding: 30px 0;
       position: relative;
       width: 100%;
+      font-size: 24px;
 
       & span {
         background-color: var(--primary-dark);
-        padding: 0 20px;
+        padding: 0 15px;
       }
 
       &::before {
@@ -35,6 +48,30 @@ import BentoCategories from '@components/ui/BentoCategories.astro';
         top: 50%;
         left: 0;
         z-index: -1;
+      }
+    }
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .categories-wrapper {
+      & h2 {
+        padding: 35px 0;
+        font-size: 28px;
+        
+        & span {
+          padding: 0 20px;
+        }
+      }
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .categories-wrapper {
+      & h2 {
+        padding: 40px 0;
+        font-size: 32px;
       }
     }
   }

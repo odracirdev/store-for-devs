@@ -9,11 +9,29 @@
 <style>
   .notice-wrapper {
     width: 100%;
-    padding: 0.15rem;
+    padding: 8px 15px;
     background-color: var(--primary);
     color: var(--primary-dark);
     position: sticky;
     bottom: 0;
     text-align: center;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .notice-wrapper {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .notice-wrapper {
+      padding: 12px 40px;
+      font-size: 16px;
+    }
   }
 </style>

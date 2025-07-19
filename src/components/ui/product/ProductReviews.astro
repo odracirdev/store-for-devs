@@ -1,0 +1,299 @@
+---
+interface Review {
+  id: number
+  reviewer: string
+  reviewerAvatar: string
+  verified: boolean
+  rating: number
+  dateCreated: string
+  review: string
+}
+
+interface Props {
+  reviews: Review[]
+  productName: string
+  reviewsAllowed: boolean
+}
+
+const { reviews, productName, reviewsAllowed } = Astro.props
+---
+
+<section class="reviews-content">
+  <h3>Valoraciones ({reviews.length})</h3>
+  
+  {reviews.length > 0 ? (
+    <div class="reviews-list">
+      {reviews.map(review => (
+        <div class="review-item">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <img 
+                src={review.reviewerAvatar || 'https://www.gravatar.com/avatar/?d=mp'} 
+                alt={`Avatar de ${review.reviewer}`}
+                class="reviewer-avatar"
+              />
+              <div>
+                <strong class="reviewer-name">{review.reviewer}</strong>
+                {review.verified && <span class="verified-badge">Compra verificada</span>}
+              </div>
+            </div>
+            <div class="review-rating">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span class={`rating-star ${i < review.rating ? 'filled' : ''}`}>★</span>
+              ))}
+            </div>
+            <time class="review-date">
+              {new Date(review.dateCreated).toLocaleDateString('es-ES', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </time>
+          </div>
+          <div class="review-content" set:html={review.review}></div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div class="no-reviews">
+      <p>No hay reseñas todavía.</p>
+      <p>Sé el primero en valorar "{productName}"</p>
+    </div>
+  )}
+  
+  {reviewsAllowed && (
+    <div class="review-form">
+      <h4>Añadir una valoración</h4>
+      <div class="rating-input">
+        <label>Tu valoración *</label>
+        <div class="stars-input">
+          <span class="star" data-rating="1">☆</span>
+          <span class="star" data-rating="2">☆</span>
+          <span class="star" data-rating="3">☆</span>
+          <span class="star" data-rating="4">☆</span>
+          <span class="star" data-rating="5">☆</span>
+        </div>
+      </div>
+      <textarea placeholder="Tu reseña *" rows="4"></textarea>
+      <button type="submit" class="submit-review">Enviar</button>
+    </div>
+  )}
+</section>
+
+<style>
+  .reviews-content {
+    & h3 {
+      color: var(--text-primary);
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    & .reviews-list {
+      margin-bottom: 40px;
+
+      & .review-item {
+        padding: 25px 0;
+        border-bottom: 1px solid #f0f0f0;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        & .review-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 15px;
+          flex-wrap: wrap;
+          gap: 15px;
+
+          & .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            & .reviewer-avatar {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+
+            & .reviewer-name {
+              color: var(--text-primary);
+              font-size: 16px;
+              display: block;
+            }
+
+            & .verified-badge {
+              background: var(--primary);
+              color: white;
+              font-size: 12px;
+              padding: 2px 8px;
+              border-radius: 12px;
+              margin-left: 8px;
+            }
+          }
+
+          & .review-rating {
+            display: flex;
+            gap: 2px;
+
+            & .rating-star {
+              color: #ddd;
+              font-size: 18px;
+
+              &.filled {
+                color: var(--primary);
+              }
+            }
+          }
+
+          & .review-date {
+            color: var(--text-secondary);
+            font-size: 14px;
+          }
+        }
+
+        & .review-content {
+          color: var(--text-secondary);
+          line-height: 1.6;
+
+          & p {
+            margin-bottom: 10px;
+          }
+        }
+      }
+    }
+
+    & .no-reviews {
+      text-align: center;
+      padding: 40px 20px;
+
+      & p {
+        color: var(--text-secondary);
+        margin-bottom: 10px;
+      }
+    }
+
+    & .review-form {
+      text-align: left;
+      max-width: 500px;
+      margin: 30px auto 0;
+
+      & h4 {
+        color: var(--text-primary);
+        margin-bottom: 20px;
+      }
+
+      & .rating-input {
+        margin-bottom: 20px;
+
+        & label {
+          display: block;
+          margin-bottom: 10px;
+          font-weight: 500;
+          color: var(--text-primary);
+        }
+
+        & .stars-input {
+          display: flex;
+          gap: 5px;
+
+          & .star {
+            font-size: 24px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.3s ease;
+
+            &:hover,
+            &.active {
+              color: var(--primary);
+            }
+          }
+        }
+      }
+
+      & textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        resize: vertical;
+        font-family: inherit;
+        color: var(--text-primary);
+        background: var(--bg-primary);
+
+        &:focus {
+          outline: none;
+          border-color: var(--primary);
+        }
+      }
+
+      & .submit-review {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: var(--bg-primary);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: var(--primary-dark);
+        }
+      }
+    }
+  }
+</style>
+
+<script>
+  // Funcionalidad de rating en reseñas
+  document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star');
+    let currentRating = 0;
+    
+    stars.forEach((star, index) => {
+      star.addEventListener('click', function() {
+        currentRating = index + 1;
+        updateStars();
+      });
+      
+      star.addEventListener('mouseenter', function() {
+        updateStarsHover(index + 1);
+      });
+    });
+    
+    const starsContainer = document.querySelector('.stars-input');
+    if (starsContainer) {
+      starsContainer.addEventListener('mouseleave', function() {
+        updateStars();
+      });
+    }
+    
+    function updateStars() {
+      stars.forEach((star, index) => {
+        if (index < currentRating) {
+          star.textContent = '★';
+          star.classList.add('active');
+        } else {
+          star.textContent = '☆';
+          star.classList.remove('active');
+        }
+      });
+    }
+    
+    function updateStarsHover(rating: number) {
+      stars.forEach((star, index) => {
+        if (index < rating) {
+          star.textContent = '★';
+        } else {
+          star.textContent = '☆';
+        }
+      });
+    }
+  });
+</script>

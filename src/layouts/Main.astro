@@ -1,23 +1,38 @@
 ---
-import Navbar from '@components/ui/Navbar/Navbar.astro';
-import Notice from '@components/ui/Notice.astro';
-import BaseLayout from '@layouts/BaseLayout.astro';
+import Navbar from '@components/ui/Navbar/Navbar.astro'
+import Notice from '@components/ui/Notice.astro'
+import BaseLayout from '@layouts/BaseLayout.astro'
 
-const { title, description } = Astro.props;
+const { title, description } = Astro.props
 ---
 
 <BaseLayout title={title} description={description}>
   <Navbar />
-  <main>
+  <main class="main-container">
     <slot />
   </main>
   <Notice />
 </BaseLayout>
 
 <style is:global>
-  main {
-    width: 1120px;
-    padding: 0 40px;
+  .main-container {
+    max-width: 1120px;
+    width: 100%;
+    padding: 0 20px;
     margin: 0 auto;
+  }
+
+  /* Tablet */
+  @media (width >= 768px) {
+    .main-container {
+      padding: 0 40px;
+    }
+  }
+
+  /* Desktop */
+  @media (width >= 1024px) {
+    .main-container {
+      padding: 0 60px;
+    }
   }
 </style>

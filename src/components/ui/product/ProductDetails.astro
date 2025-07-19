@@ -1,0 +1,40 @@
+---
+interface Props {
+  sanitizedDescription: string
+}
+
+const { sanitizedDescription } = Astro.props
+---
+
+<section class="product-details">
+  <div class="description-content" set:html={sanitizedDescription}></div>
+</section>
+
+<style>
+  .product-details {
+    & .description-content {
+      line-height: 1.6;
+      color: var(--text-secondary);
+
+      & p {
+        margin-bottom: 15px;
+      }
+
+      & h3 {
+        color: var(--text-primary);
+        margin: 25px 0 15px 0;
+        font-size: 1.2rem;
+      }
+
+      & ul {
+        margin-bottom: 20px;
+        padding-left: 20px;
+
+        & li {
+          margin-bottom: 8px;
+          color: var(--text-secondary);
+        }
+      }
+    }
+  }
+</style>
