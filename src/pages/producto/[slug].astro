@@ -1,4 +1,6 @@
 ---
+export const prerender = false
+
 import Main from '../../layouts/Main.astro'
 import ProductBreadcrumb from '../../components/product/ProductBreadcrumb.astro'
 import ProductGallery from '../../components/product/ProductGallery.astro'
@@ -9,23 +11,35 @@ import RelatedProducts from '../../components/product/RelatedProducts.astro'
 import { wordpressService } from '../../services/wordpress'
 import sanitizeHtml from 'sanitize-html'
 
-// Generar rutas estáticas para todos los productos
-export async function getStaticPaths() {
-	try {
-		const products = await wordpressService.getProducts()
+// Obtener el slug de la URL
+const { slug } = Astro.params
 
-		return products.map((product: any) => ({
-			params: { slug: product.slug },
-			props: { product, allProducts: products },
-		}))
-	} catch (error) {
-		console.error('Error loading products for static paths:', error)
-		return []
+// Obtener el producto por slug
+let product: any = null
+let allProducts: any[] = []
+
+try {
+	console.log(`🔍 Buscando producto con slug: ${slug}`)
+
+	// Obtener todos los productos para buscar el que coincida con el slug
+	allProducts = await wordpressService.getProducts({
+		per_page: 100, // Obtener todos los productos
+		status: 'publish',
+	})
+
+	// Buscar el producto por slug
+	product = allProducts.find((p: any) => p.slug === slug)
+
+	if (!product) {
+		console.error(`❌ Producto con slug "${slug}" no encontrado`)
+		return Astro.redirect('/404')
 	}
-}
 
-// Obtener producto y productos relacionados desde props
-const { product, allProducts } = Astro.props
+	console.log(`✅ Producto encontrado: ${product.name} (ID: ${product.id})`)
+} catch (error) {
+	console.error('❌ Error loading product:', error)
+	return Astro.redirect('/404')
+}
 
 // Obtener reseñas del producto
 let productReviews: any[] = []
