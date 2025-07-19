@@ -1,19 +1,19 @@
 ---
-import ProductCard from '../ui/ProductCard.astro'
+import ProductCard from '@ui/ProductCard.astro'
 
 interface Product {
-  id: number
-  name: string
-  slug: string
-  image: string[]
-  category: string
-  price: string
-  salePrice?: string
-  onSale: boolean
+	id: number
+	name: string
+	slug: string
+	image: string[]
+	category: string
+	price: string
+	salePrice?: string
+	onSale: boolean
 }
 
 interface Props {
-  products: Product[]
+	products: Product[]
 }
 
 const { products } = Astro.props

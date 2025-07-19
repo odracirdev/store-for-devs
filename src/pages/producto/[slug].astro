@@ -1,14 +1,14 @@
 ---
 export const prerender = false
 
-import Main from '../../layouts/Main.astro'
-import ProductBreadcrumb from '../../components/product/ProductBreadcrumb.astro'
-import ProductGallery from '../../components/product/ProductGallery.astro'
-import ProductInfo from '../../components/product/ProductInfo.astro'
-import ProductDetails from '../../components/product/ProductDetails.astro'
-import ProductReviews from '../../components/product/ProductReviews.astro'
-import RelatedProducts from '../../components/product/RelatedProducts.astro'
-import { wordpressService } from '../../services/wordpress'
+import Main from '@layouts/Main.astro'
+import ProductBreadcrumb from '@ui/product/ProductBreadcrumb.astro'
+import ProductGallery from '@ui/product/ProductGallery.astro'
+import ProductInfo from '@ui/product/ProductInfo.astro'
+import ProductDetails from '@ui/product/ProductDetails.astro'
+import ProductReviews from '@ui/product/ProductReviews.astro'
+import RelatedProducts from '@ui/product/RelatedProducts.astro'
+import { wordpressService } from '@services/wordpress'
 import sanitizeHtml from 'sanitize-html'
 
 // Obtener el slug de la URL

@@ -1,7 +1,8 @@
 ---
 import Button from '@components/ui/Button.astro'
-import ProductCard from '@components/ui/ProductCard.astro'
-import { wordpressService } from '../../services/wordpress'
+import BentoCategories from '@ui/BentoCategories.astro'
+import ProductCard from '@ui/ProductCard.astro'
+import { wordpressService } from '@services/wordpress'
 
 // Obtener productos más vendidos de WordPress
 let bestSellingProducts: any[] = []
