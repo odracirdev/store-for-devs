@@ -1,6 +1,9 @@
 ---
 import { Image } from 'astro:assets'
 import logo from '@images/assets/logo.webp'
+
+// Obtener la ruta actual para marcar enlaces activos
+const currentPath = Astro.url.pathname
 ---
 
 <div class="navbar-section">
@@ -21,8 +24,22 @@ import logo from '@images/assets/logo.webp'
     <!-- Menú principal -->
     <div class="navbar-menu" id="navbar-menu">
       <ul class="navbar">
-        <li><a href="#">Poleras</a></li>
-        <li><a href="#">Polerones</a></li>
+        <li>
+          <a 
+            href="/categoria/poleras" 
+            class={currentPath.startsWith('/categoria/poleras') ? 'active' : ''}
+          >
+            Poleras
+          </a>
+        </li>
+        <li>
+          <a 
+            href="/categoria/polerones" 
+            class={currentPath.startsWith('/categoria/polerones') ? 'active' : ''}
+          >
+            Polerones
+          </a>
+        </li>
       </ul>
       <div class="account-items-wrapper">
         <ul class="account-items">
@@ -135,13 +152,17 @@ import logo from '@images/assets/logo.webp'
           font-size: 18px;
           font-weight: 700;
           padding: 10px 0;
-          border-bottom: 1px solid var(--secondary-light);
-          opacity: 0.3;
           transition: all 0.3s ease;
+          position: relative;
 
           &:hover {
             color: var(--primary);
             transform: translateX(5px);
+          }
+
+          &.active {
+            color: var(--primary);
+            font-weight: 800;
           }
         }
       }
@@ -243,8 +264,20 @@ import logo from '@images/assets/logo.webp'
 
           & a {
             font-size: 20px;
-            padding: 0;
+            padding: 8px 12px;
             border-bottom: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+
+            &:hover {
+              color: var(--primary);
+            }
+
+            &.active {
+              color: var(--primary);
+              font-weight: 800;
+            }
           }
         }
         
