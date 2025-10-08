@@ -1,10 +1,12 @@
 import { defineConfig } from 'astro/config'
 import UnoCSS from 'unocss/astro'
+import cloudflare from '@astrojs/cloudflare'
 
 const STANDARD_UNIT_SIZE = 16
 
 // https://astro.build/config
 export default defineConfig({
+	adapter: cloudflare(),
 	vite: {
 		build: {
 			cssMinify: 'lightningcss',
