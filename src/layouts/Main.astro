@@ -1,17 +1,13 @@
 ---
-import Navbar from '@components/ui/Navbar/Navbar.astro'
-import Notice from '@components/ui/Notice.astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
 
 const { title, description } = Astro.props
 ---
 
 <BaseLayout title={title} description={description}>
-  <Navbar />
   <main class="main-container">
     <slot />
   </main>
-  <Notice />
 </BaseLayout>
 
 <style is:global>
@@ -20,6 +16,7 @@ const { title, description } = Astro.props
     width: 100%;
     padding: 0 20px;
     margin: 0 auto;
+    height: 100dvh;
   }
 
   /* Tablet */

@@ -1,14 +1,51 @@
 ---
+import { Image } from 'astro:assets'
+import Button from '@components/ui/Button.astro'
+import logo from '@images/assets/logo.webp'
 import Main from '@layouts/Main.astro'
-import NewProducts from '@sections/index/NewProducts.astro'
-import TopSellingProducts from '@sections/index/TopSellingProducts.astro'
-import PromoSection from '@sections/index/PromoSection.astro'
-import Categories from '@sections/index/Categories.astro'
 ---
 
 <Main title="Store for Devs" description="Declara tu estilo">
-  <PromoSection />
-  <NewProducts />
-  <TopSellingProducts />
-  <Categories />
+  <header class="logo">
+    <Image src={logo} alt="Store for Devs logo" width={300} />
+  </header>
+  <div class="content">
+    <div>
+      <h1>Estamos rediseñando nuestra tienda</h1>
+      <p>Trabajamos arduamente para mejorar tu experiencia de compra. Pronto podrás disfrutar de una nueva interfaz y funcionalidades mejoradas.</p>
+    </div>
+    <div>
+      <h2>¿Cómo puedo comprar mientras tanto?</h2>
+      <p>Todos nuestros productos están publicados en <a href="https://instagram.com/storefordevs" target="_blank">Instagram</a>. Por ahora, puedes realizar tus compras a través de esa plataforma.</p>
+    </div>
+    <div>
+      <Button href='https://instagram.com/storefordevs' content='Ir a Instagram' />
+    </div>
+  </div>
 </Main>
+
+<style>
+  .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    max-width: 600px;
+    text-align: center;
+    padding-top: 50px;
+    margin: 0 auto;
+  }
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+</style>
